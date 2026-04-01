@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { get, post, put, del } from '../../api';
+import { get, post, patch, del } from '../../api';
 
-const EMPTY_RANGE = { rowStart: '', rowEnd: '', cols: '', category: '' };
+const EMPTY_RANGE = { rowStart: '', rowEnd: '', cols: '', category_id: '' };
 
 function hasOverlap(ranges, skipIndex, start, end) {
   return ranges.some((r, i) => {
@@ -19,10 +19,10 @@ function getGappedRows(ranges) {
   );
   const gaps = [];
   for (let i = 0; i < sorted.length - 1; i++) {
-    const endCode = sorted[i].rowEnd.charCodeAt(0);
-    const nextStartCode = sorted[i + 1].rowStart.charCodeAt(0);
+    const endCode = sorted[i].rowEnd.codePointAt(0);
+    const nextStartCode = sorted[i + 1].rowStart.codePointAt(0);
     for (let c = endCode + 1; c < nextStartCode; c++) {
-      gaps.push(String.fromCharCode(c));
+      gaps.push(String.fromCodePoint(c));
     }
   }
   return gaps;
@@ -37,6 +37,7 @@ export default function AddEditSeatLayout() {
   const [selectedScreenType, setSelectedScreenType] = useState('');
   const [rowRanges, setRowRanges] = useState([{ ...EMPTY_RANGE }]);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [originalScreen, setOriginalScreen] = useState(null);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
@@ -49,10 +50,13 @@ export default function AddEditSeatLayout() {
           get(`/screen/cinema/${cinema_id}`),
         ]
       );
-      if (seatRes.status === 'fulfilled') setCategories(seatRes.value);
-      if (screenRes.status === 'fulfilled') setScreenTypes(screenRes.value);
-      if (existingScreensRes.status === 'fulfilled')
+      if (seatRes.status === 'fulfilled')
+        setCategories(seatRes.value.data ?? []);
+      if (screenRes.status === 'fulfilled')
+        setScreenTypes(screenRes.value.data);
+      if (existingScreensRes.status === 'fulfilled') {
         setScreens(existingScreensRes.value.data ?? []);
+      }
     };
     fetchData();
   }, [cinema_id]);
@@ -90,7 +94,7 @@ export default function AddEditSeatLayout() {
       if (!r.rowStart) errs[`range_${i}_rowStart`] = 'Required';
       if (!r.rowEnd) errs[`range_${i}_rowEnd`] = 'Required';
       if (!r.cols) errs[`range_${i}_cols`] = 'Required';
-      if (!r.category) errs[`range_${i}_category`] = 'Required';
+      if (!r.category_id) errs[`range_${i}_category`] = 'Required';
 
       if (r.rowStart && r.rowEnd && r.rowEnd < r.rowStart)
         errs[`range_${i}_rowEnd`] = 'Must be ≥ row start';
@@ -112,29 +116,72 @@ export default function AddEditSeatLayout() {
     }
 
     const payload = {
-      cinema_id: cinema_id,
+      cinema_id: Number.parseInt(cinema_id, 10),
       name: screenName.trim(),
       screen_type_id: selectedScreenType,
-      rowRanges: rowRanges.map((r) => ({
+      row_ranges: rowRanges.map((r) => ({
         rowStart: r.rowStart,
         rowEnd: r.rowEnd,
-        cols: parseInt(r.cols),
-        category: r.category,
+        cols: Number.parseInt(r.cols, 10) || 0,
+        category_id: r.category_id,
       })),
     };
 
     setSaving(true);
     try {
-      if (editingIndex !== null) {
-        const screenId = screens[editingIndex].id;
-        const updated = await put(`/screen/${screenId}`, payload);
-        setScreens((prev) =>
-          prev.map((s, i) => (i === editingIndex ? updated : s))
-        );
-        setEditingIndex(null);
+      if (editingIndex === null) {
+        const { data } = await post('/screen', payload);
+        const newItem = {
+          id: data.newScreen.id,
+          name: data.newScreen.name,
+          cinema_id: data.newScreen.cinema_id,
+          screen_type_id: data.newScreen.screen_type,
+          total_capacity: data.newScreen.total_capacity,
+          row_ranges: data.row_ranges,
+        };
+        setScreens((prev) => [...prev, newItem]);
       } else {
-        const created = await post('/screen', { cinema_id, ...payload });
-        setScreens((prev) => [...prev, created]);
+        const screenId = screens[editingIndex].id;
+        console.log(screens, 'Screens');
+        const patchPayload = {};
+
+        if (screenName.trim() !== originalScreen.name)
+          patchPayload.name = screenName.trim();
+
+        if (String(selectedScreenType) !== originalScreen.screen_type_id)
+          patchPayload.screen_type_id = selectedScreenType;
+
+        const normalizedRanges = rowRanges.map((r) => ({
+          rowStart: r.rowStart,
+          rowEnd: r.rowEnd,
+          cols: Number.parseInt(r.cols),
+          category_id: r.category_id,
+        }));
+
+        const originalRanges = originalScreen.row_ranges.map((r) => ({
+          rowStart: r.rowStart,
+          rowEnd: r.rowEnd,
+          cols: Number.parseInt(r.cols),
+          category_id: r.category_id,
+        }));
+
+        if (JSON.stringify(normalizedRanges) !== JSON.stringify(originalRanges))
+          patchPayload.row_ranges = normalizedRanges;
+
+        const { data } = await patch(`/screen/${screenId}`, patchPayload);
+        const newItem = {
+          row_ranges: data.row_ranges,
+          name: data.updatedScreen.name,
+          cinema_id: data.updatedScreen.cinema_id,
+          screen_type_id: data.updatedScreen.screen_type,
+          total_capacity: data.updatedScreen.total_capacity,
+        };
+
+        setScreens((prev) =>
+          prev.map((s, i) => (i === editingIndex ? { ...s, ...newItem } : s))
+        );
+        setOriginalScreen(null);
+        setEditingIndex(null);
       }
 
       setScreenName('');
@@ -142,6 +189,7 @@ export default function AddEditSeatLayout() {
       setRowRanges([{ ...EMPTY_RANGE }]);
       setErrors({});
     } catch (err) {
+      console.error('Error Adding Updating screen', err);
       setErrors({ api: err.message });
     } finally {
       setSaving(false);
@@ -150,9 +198,18 @@ export default function AddEditSeatLayout() {
 
   function handleEditScreen(index) {
     const screen = screens[index];
+    const ranges = screen.row_ranges.map((r) => ({
+      ...r,
+      cols: String(r.cols),
+    }));
+    setOriginalScreen({
+      name: screen.name,
+      screen_type_id: String(screen.screen_type_id),
+      row_ranges: ranges,
+    });
     setScreenName(screen.name);
-    setSelectedScreenType(screen.type);
-    setRowRanges(screen.rowRanges.map((r) => ({ ...r, cols: String(r.cols) })));
+    setSelectedScreenType(screen.screen_type_id);
+    setRowRanges(ranges);
     setEditingIndex(index);
     setErrors({});
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -182,6 +239,7 @@ export default function AddEditSeatLayout() {
     setSelectedScreenType('');
     setRowRanges([{ ...EMPTY_RANGE }]);
     setEditingIndex(null);
+    setOriginalScreen(null);
     setErrors({});
   }
 
@@ -201,7 +259,7 @@ export default function AddEditSeatLayout() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <h1 className="text-xl font-bold">
-        {editingIndex !== null ? 'Edit Screens' : 'Add Screens'}
+        {editingIndex === null ? 'Add Screens' : 'Edit Screens'}
       </h1>
 
       {/* Screen name */}
@@ -301,8 +359,8 @@ export default function AddEditSeatLayout() {
               />
               {/* Category */}
               <select
-                value={range.category}
-                onChange={(e) => updateRange(i, 'category', e.target.value)}
+                value={range.category_id}
+                onChange={(e) => updateRange(i, 'category_id', e.target.value)}
                 className={`flex-1 border rounded px-2 py-2 text-sm ${
                   errors[`range_${i}_category`]
                     ? 'border-red-500'
@@ -361,7 +419,7 @@ export default function AddEditSeatLayout() {
             disabled={saving}
             className="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-800 disabled:opacity-50"
           >
-            {editingIndex !== null ? 'Update Screen' : 'Add Screen'}
+            {editingIndex === null ? 'Add Screen' : 'Update Screen'}
           </button>
           {editingIndex !== null && (
             <button
@@ -391,13 +449,13 @@ export default function AddEditSeatLayout() {
               <div>
                 <p className="font-medium">{screen.name}</p>
                 <p className="text-gray-500 text-xs">
-                  {getScreenTypeByName(screen.type)}
+                  {getScreenTypeByName(screen.screen_type_id)}
                 </p>
                 <p className="text-gray-500 text-xs">
-                  {screen.rowRanges
+                  {screen.row_ranges
                     .map(
                       (r) =>
-                        `${r.rowStart}–${r.rowEnd} · ${r.cols} cols · ${getCategoryName(r.category)}`
+                        `${r.rowStart}–${r.rowEnd} · ${r.cols} cols · ${getCategoryName(r.category_id)}`
                     )
                     .join('  |  ')}
                 </p>

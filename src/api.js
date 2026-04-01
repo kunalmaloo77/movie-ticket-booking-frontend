@@ -16,7 +16,7 @@ export async function post(path, body) {
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 401) window.dispatchEvent(new CustomEvent("auth:unauthorized"));
-    throw new Error(data.message || data.error || "Request failed");
+    throw new Error(data.message || data.error.message || "Request failed");
   }
   return data;
 }
@@ -26,7 +26,7 @@ export async function get(path) {
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 401) window.dispatchEvent(new CustomEvent("auth:unauthorized"));
-    throw new Error(data.message || data.error || "Request failed");
+    throw new Error(data.message || data.error.message || "Request failed");
   }
   return data;
 }
@@ -40,7 +40,21 @@ export async function put(path, body) {
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 401) window.dispatchEvent(new CustomEvent("auth:unauthorized"));
-    throw new Error(data.message || data.error || "Request failed");
+    throw new Error(data.message || data.error.message || "Request failed");
+  }
+  return data;
+}
+
+export async function patch(path, body) {
+  const res = await fetch(`${BASE}${path}`, {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+    throw new Error(data.message || data.error.message || "Request failed");
   }
   return data;
 }
@@ -53,7 +67,7 @@ export async function del(path) {
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 401) window.dispatchEvent(new CustomEvent("auth:unauthorized"));
-    throw new Error(data.message || data.error || "Request failed");
+    throw new Error(data.message || data.error.message || "Request failed");
   }
   return data;
 }

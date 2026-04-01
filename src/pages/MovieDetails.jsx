@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../api';
-import { MovieDetailsSkeleton, ImageWithSkeleton } from '../components/Skeleton';
+import {
+  MovieDetailsSkeleton,
+  ImageWithSkeleton,
+} from '../components/Skeleton';
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
 
@@ -16,7 +19,7 @@ export default function MovieDetails() {
   useEffect(() => {
     async function fetchMovie() {
       try {
-        const data = await get(`/movie/${movie_id}`);
+        const { data } = await get(`/movie/${movie_id}`);
         setMovie(data);
       } catch (err) {
         console.error(err);
@@ -35,8 +38,13 @@ export default function MovieDetails() {
   if (error || !movie) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <p className="text-red-500 font-medium mb-2">{error || 'Movie not found.'}</p>
-        <button onClick={() => navigate(-1)} className="text-sm text-blue-600 underline">
+        <p className="text-red-500 font-medium mb-2">
+          {error || 'Movie not found.'}
+        </p>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-sm text-blue-600 underline"
+        >
           Go back
         </button>
       </div>
@@ -79,13 +87,11 @@ export default function MovieDetails() {
             skeletonClassName="rounded-xl"
           />
 
-          {/* Info + CTA */}
           <div className="flex-1 md:pt-24">
             <h1 className="text-2xl md:text-3xl font-bold leading-snug mb-2">
               {movie.title.replaceAll('-', ' ')}
             </h1>
 
-            {/* Badges */}
             <div className="flex items-center gap-2 flex-wrap mb-5">
               {movie.rating && (
                 <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">
@@ -102,9 +108,10 @@ export default function MovieDetails() {
               )}
             </div>
 
-            {/* CTA — right below the title, not at the bottom */}
             <button
-              onClick={() => navigate(`/movies/${city_name}/${movie_id}/booking`)}
+              onClick={() =>
+                navigate(`/movies/${city_name}/${movie_id}/booking`)
+              }
               className="px-7 py-2.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-semibold rounded-lg text-sm transition-all cursor-pointer mb-6"
             >
               Book Tickets
@@ -123,20 +130,30 @@ export default function MovieDetails() {
         <div className="mt-8 border-t pt-6 grid grid-cols-2 sm:grid-cols-3 gap-5 text-sm">
           {movie.genres && (
             <div>
-              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">Genre</span>
+              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">
+                Genre
+              </span>
               <span className="font-medium text-gray-800">{movie.genres}</span>
             </div>
           )}
           {movie.rating && (
             <div>
-              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">Rating</span>
-              <span className="font-medium text-gray-800">{movie.rating} / 10</span>
+              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">
+                Rating
+              </span>
+              <span className="font-medium text-gray-800">
+                {movie.rating} / 10
+              </span>
             </div>
           )}
           {movie.adult !== undefined && (
             <div>
-              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">Adult</span>
-              <span className="font-medium text-gray-800">{movie.adult ? 'Yes' : 'No'}</span>
+              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">
+                Adult
+              </span>
+              <span className="font-medium text-gray-800">
+                {movie.adult ? 'Yes' : 'No'}
+              </span>
             </div>
           )}
         </div>

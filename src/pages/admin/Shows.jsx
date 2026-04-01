@@ -23,8 +23,7 @@ export default function Shows() {
   const [form, setForm] = useState({
     movie_id: '',
     screen_id: '',
-    show_date: '',
-    show_time: '',
+    start_time: '',
     language: '',
     category_prices: [],
   });
@@ -41,7 +40,7 @@ export default function Shows() {
 
   const fetchCategories = async (screen_id) => {
     try {
-      const data = await get('/seats/categories/' + screen_id);
+      const { data } = await get('/seats/categories/' + screen_id);
       setCategories(data);
     } catch (err) {
       console.error('Failed to fetch seat categories:', err);
@@ -124,8 +123,8 @@ export default function Shows() {
         ...prev,
         category_prices: exists
           ? category_prices.map((c) =>
-              c.category_id === id ? { ...c, price } : c
-            )
+            c.category_id === id ? { ...c, price } : c
+          )
           : [...category_prices, { category_id: id, price }],
       };
     });
@@ -152,18 +151,16 @@ export default function Shows() {
       const body = {
         movie_id: parseInt(form.movie_id),
         screen_id: parseInt(form.screen_id),
-        show_date: form.show_date,
-        show_time: form.show_time,
+        start_time: form.start_time,
         language: form.language,
         category_price,
       };
       const { data } = await post('/show', body);
-      setMsg(`Show created (id: ${data.id}) on ${data.show_date}`);
+      setMsg(`Show created (id: ${data.id}) on ${data.start_time}`);
       setForm({
         movie_id: '',
         screen_id: '',
-        show_date: '',
-        show_time: '',
+        start_time: '',
         language: '',
         category_prices: [],
       });
@@ -237,22 +234,11 @@ export default function Shows() {
         />
 
         <input
-          type="date"
-          name="show_date"
-          value={form.show_date}
+          type="datetime-local"
+          name="start_time"
+          value={form.start_time}
           onChange={(e) =>
-            setForm((prev) => ({ ...prev, show_date: e.target.value }))
-          }
-          className="w-full border rounded px-3 py-2 outline-none focus:ring-2 focus:ring-gray-300"
-          required
-        />
-
-        <input
-          type="time"
-          name="show_time"
-          value={form.show_time}
-          onChange={(e) =>
-            setForm((prev) => ({ ...prev, show_time: e.target.value }))
+            setForm((prev) => ({ ...prev, start_time: e.target.value }))
           }
           className="w-full border rounded px-3 py-2 outline-none focus:ring-2 focus:ring-gray-300"
           required

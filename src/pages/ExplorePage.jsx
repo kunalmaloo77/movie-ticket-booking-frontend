@@ -52,7 +52,7 @@ export default function ExplorePage() {
 
     async function fetchMovies() {
       try {
-        const data = await get(`/movie/region/${region.id}`);
+        const { data } = await get(`/movie/region/${region.id}`);
         setMovies(data);
       } catch (error) {
         console.error(error);

@@ -91,7 +91,7 @@ export default function SeatSelectionPage() {
       }
 
       const seatIds = selectedSeats.map((s) => s.id);
-      const orderData = await post('/booking', {
+      const { data: orderData } = await post('/booking', {
         show_id: parseInt(show_id),
         seat_ids: seatIds,
       });

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../api';
 import { getCookie } from '../utils/cookie';
 import { CinemaListSkeleton } from '../components/Skeleton';
+import { formatDateTime } from '../utils/utils';
 
 export default function BookingPage() {
   const { city_name, movie_id } = useParams();
@@ -20,7 +21,7 @@ export default function BookingPage() {
           navigate(`/explore/home/${city_name}`);
           return;
         }
-        const data = await get(`/cinema/${movie_id}/${region.id}`);
+        const { data } = await get(`/cinema/${movie_id}/${region.id}`);
         setCinemas(data);
       } catch (err) {
         console.error(err);
@@ -86,8 +87,8 @@ export default function BookingPage() {
                   <p className="text-sm text-gray-500 mt-1">{cinema.address}</p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
-                  <span className="text-sm font-medium text-gray-700">
-                    {cinema.show_time}
+                  <span className="text-xs text-gray-500">
+                    {formatDateTime(cinema.start_time)}
                   </span>
                   <button
                     onClick={() =>

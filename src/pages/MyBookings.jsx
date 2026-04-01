@@ -32,8 +32,8 @@ export default function MyBookings() {
     }
     const fetchBookings = async () => {
       try {
-        const data = await get(`/booking/user/${user.id}`);
-        setBookings(data.bookings);
+        const { data } = await get(`/booking/user/${user.id}`);
+        setBookings(data);
       } catch (err) {
         setError(err.message || 'Failed to load bookings');
       } finally {
@@ -48,9 +48,7 @@ export default function MyBookings() {
   }
 
   if (error) {
-    return (
-      <p className="text-red-500 text-center py-24">{error}</p>
-    );
+    return <p className="text-red-500 text-center py-24">{error}</p>;
   }
 
   return (
@@ -85,12 +83,15 @@ export default function MyBookings() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs text-gray-400 mb-1">Booking #{booking.booking_id}</p>
+                    <p className="text-xs text-gray-400 mb-1">
+                      Booking #{booking.booking_id}
+                    </p>
                     <p className="text-sm text-gray-600">{date}</p>
                   </div>
                   <span
                     className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${
-                      STATUS_STYLES[booking.status] || 'bg-gray-100 text-gray-500'
+                      STATUS_STYLES[booking.status] ||
+                      'bg-gray-100 text-gray-500'
                     }`}
                   >
                     {STATUS_LABELS[booking.status] || booking.status}
@@ -101,12 +102,18 @@ export default function MyBookings() {
 
                 <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-700">
                   <div>
-                    <span className="text-gray-400 text-xs uppercase tracking-wide block mb-0.5">Seats</span>
+                    <span className="text-gray-400 text-xs uppercase tracking-wide block mb-0.5">
+                      Seats
+                    </span>
                     <span className="font-medium">{seatLabels}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-xs uppercase tracking-wide block mb-0.5">Amount</span>
-                    <span className="font-medium">₹{parseFloat(booking.amount).toFixed(2)}</span>
+                    <span className="text-gray-400 text-xs uppercase tracking-wide block mb-0.5">
+                      Amount
+                    </span>
+                    <span className="font-medium">
+                      ₹{parseFloat(booking.amount).toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
