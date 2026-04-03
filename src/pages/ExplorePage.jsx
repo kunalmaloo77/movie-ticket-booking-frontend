@@ -117,7 +117,7 @@ export default function ExplorePage() {
               containerClassName="w-full h-56"
             />
             <div className="p-3">
-              <h3 className="font-semibold text-sm truncate">{m.movie_name}</h3>
+              <h3 className="font-semibold text-sm truncate">{m.title}</h3>
               <p className="text-xs text-gray-500 mt-1">Rating: {m.rating}</p>
               <p className="text-xs text-gray-400 mt-1">{m.genres}</p>
             </div>

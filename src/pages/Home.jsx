@@ -3,6 +3,7 @@ import { get } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { getCookie, setCookie } from '../utils/cookie';
 import { CityGridSkeleton } from '../components/Skeleton';
+import { capitalize } from '../utils/utils';
 
 export default function Home() {
   const [regions, setRegions] = useState([]);
@@ -62,7 +63,9 @@ export default function Home() {
               onClick={() => handleSelect(region)}
               className="border rounded-lg px-4 py-3 text-left hover:bg-gray-50 hover:border-gray-400 transition-colors"
             >
-              <span className="font-medium">{region.city_name}</span>
+              <span className="font-medium">
+                {capitalize(region.city_name)}
+              </span>
               <span className="block text-xs text-gray-400 mt-0.5">
                 {region.city_code}
               </span>

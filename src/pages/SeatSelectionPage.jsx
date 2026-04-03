@@ -46,12 +46,12 @@ export default function SeatSelectionPage() {
     fetchSeats();
   }, [show_id]);
 
-  const toggleSeat = (seat) => {
+  const toggleSeat = (seat, row) => {
     if (seat.status !== 'available') return;
     setSelectedSeats((prev) => {
       const exists = prev.find((s) => s.id === seat.id);
       if (exists) return prev.filter((s) => s.id !== seat.id);
-      return [...prev, seat];
+      return [...prev, { ...seat, row_label: row }];
     });
   };
 
@@ -181,14 +181,6 @@ export default function SeatSelectionPage() {
         <p className="text-red-500 text-center py-16">{error}</p>
       ) : (
         <>
-          {/* Screen indicator */}
-          <div className="mb-8">
-            <div className="h-2 bg-gradient-to-b from-gray-300 to-transparent rounded-t-full mx-auto w-3/4" />
-            <p className="text-center text-xs text-gray-400 mt-1 uppercase tracking-widest">
-              Screen
-            </p>
-          </div>
-
           {/* Legend */}
           <div className="flex items-center justify-center gap-6 mb-6 text-xs text-gray-600">
             <span className="flex items-center gap-1.5">
@@ -216,10 +208,10 @@ export default function SeatSelectionPage() {
                   {rowData.seats.map((seat) => (
                     <button
                       key={seat.id}
-                      onClick={() => toggleSeat(seat)}
+                      onClick={() => toggleSeat(seat, rowData.row)}
                       disabled={seat.status !== 'available'}
                       title={`Row ${rowData.row}, Seat ${seat.column_label} — ₹${seat.price}`}
-                      className={`w-8 h-8 rounded text-xs font-medium border transition-colors ${getSeatStyle(seat)}`}
+                      className={`w-6 h-6 rounded text-xs font-medium border transition-colors ${getSeatStyle(seat)}`}
                     >
                       {seat.column_label}
                     </button>
@@ -227,6 +219,13 @@ export default function SeatSelectionPage() {
                 </div>
               </div>
             ))}
+          </div>
+          {/* Screen indicator */}
+          <div className="mt-8">
+            <div className="h-2 bg-linear-to-t from-gray-300 to-transparent rounded-b-full mx-auto w-3/4" />
+            <p className="text-center text-xs text-gray-400 mt-1 uppercase tracking-widest">
+              Screen
+            </p>
           </div>
         </>
       )}
@@ -241,7 +240,11 @@ export default function SeatSelectionPage() {
                 selected
               </p>
               <p className="text-gray-500 mt-0.5">
-                {selectedSeats.map((s) => s.column_label).join(', ')}
+                {selectedSeats
+                  .map((s) => {
+                    return s.row_label.toString() + s.column_label.toString();
+                  })
+                  .join(', ')}
               </p>
             </div>
             <div className="flex items-center gap-4 shrink-0">
