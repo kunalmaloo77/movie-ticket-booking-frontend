@@ -26,6 +26,10 @@ export default function Home() {
       }
       try {
         const { data } = await get('/region');
+        if (!data || data.length === 0) {
+          setRegions([]);
+          return;
+        }
         setRegions(data);
         sessionStorage.setItem('regions', JSON.stringify(data));
       } catch (error) {

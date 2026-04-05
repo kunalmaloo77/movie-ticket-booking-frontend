@@ -12,7 +12,7 @@ export default function Regions() {
     setMsg('');
     setError('');
     try {
-      const data = await post('/region', {
+      const { data } = await post('/region', {
         city_code: cityCode,
         city_name: cityName,
       });
