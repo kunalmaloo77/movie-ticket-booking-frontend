@@ -5,8 +5,7 @@ import {
   MovieDetailsSkeleton,
   ImageWithSkeleton,
 } from '../components/Skeleton';
-
-const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
+import { TMDB_IMAGE_BASE } from '../utils/const';
 
 export default function MovieDetails() {
   const { movie_id, city_name } = useParams();
