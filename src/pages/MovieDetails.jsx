@@ -64,7 +64,7 @@ export default function MovieDetails() {
         ) : (
           <div className="w-full h-full bg-gray-800" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/30" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-black/30" />
 
         <button
           onClick={() => navigate(-1)}

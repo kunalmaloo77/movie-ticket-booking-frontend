@@ -12,6 +12,7 @@ export async function post(path, body) {
     method: 'POST',
     headers: headers(),
     body: JSON.stringify(body),
+    credentials: 'include',
   });
   const data = await res.json();
   if (!res.ok) {
@@ -23,7 +24,10 @@ export async function post(path, body) {
 }
 
 export async function get(path) {
-  const res = await fetch(`${BASE}${path}`, { headers: headers() });
+  const res = await fetch(`${BASE}${path}`, {
+    headers: headers(),
+    credentials: 'include',
+  });
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 401)
@@ -38,6 +42,7 @@ export async function put(path, body) {
     method: 'PUT',
     headers: headers(),
     body: JSON.stringify(body),
+    credentials: 'include',
   });
   const data = await res.json();
   if (!res.ok) {
@@ -53,6 +58,7 @@ export async function patch(path, body) {
     method: 'PATCH',
     headers: headers(),
     body: JSON.stringify(body),
+    credentials: 'include',
   });
   const data = await res.json();
   if (!res.ok) {
@@ -67,6 +73,7 @@ export async function del(path) {
   const res = await fetch(`${BASE}${path}`, {
     method: 'DELETE',
     headers: headers(),
+    credentials: 'include',
   });
   const data = await res.json();
   if (!res.ok) {
