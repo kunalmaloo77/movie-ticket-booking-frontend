@@ -35,8 +35,8 @@ export default function SeatSelectionPage() {
   useEffect(() => {
     const fetchSeats = async () => {
       try {
-        const data = await get(`/show/${show_id}/seats`);
-        setRows(data.data);
+        const { data } = await get(`/seats/show/${show_id}`);
+        setRows(data);
       } catch (err) {
         setError(err.message || 'Failed to load seats');
       } finally {

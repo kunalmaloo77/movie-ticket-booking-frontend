@@ -1,27 +1,27 @@
-import { useState } from "react";
-import { post } from "../../api";
+import { useState } from 'react';
+import { post } from '../../api';
 
 export default function Cinemas() {
-  const [cinemaName, setCinemaName] = useState("");
-  const [address, setAddress] = useState("");
-  const [cityCode, setCityCode] = useState("");
-  const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
+  const [cinemaName, setCinemaName] = useState('');
+  const [address, setAddress] = useState('');
+  const [cityCode, setCityCode] = useState('');
+  const [msg, setMsg] = useState('');
+  const [error, setError] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setMsg("");
-    setError("");
+    setMsg('');
+    setError('');
     try {
-      const data = await post("/cinema/", {
+      const { data } = await post('/cinema/', {
         cinema_name: cinemaName,
         address,
         city_code: cityCode,
       });
       setMsg(`Cinema created: ${data.cinema_name} (code: ${data.cinema_code})`);
-      setCinemaName("");
-      setAddress("");
-      setCityCode("");
+      setCinemaName('');
+      setAddress('');
+      setCityCode('');
     } catch (err) {
       setError(err.message);
     }
