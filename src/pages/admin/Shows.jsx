@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { get, post } from '../../api';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -40,7 +40,7 @@ export default function Shows() {
 
   const fetchCategories = async (screen_id) => {
     try {
-      const { data } = await get('/seats/categories/' + screen_id);
+      const { data } = await get('/seats/categories/screen/' + screen_id);
       setCategories(data);
     } catch (err) {
       console.error('Failed to fetch seat categories:', err);
@@ -123,8 +123,8 @@ export default function Shows() {
         ...prev,
         category_prices: exists
           ? category_prices.map((c) =>
-            c.category_id === id ? { ...c, price } : c
-          )
+              c.category_id === id ? { ...c, price } : c
+            )
           : [...category_prices, { category_id: id, price }],
       };
     });
