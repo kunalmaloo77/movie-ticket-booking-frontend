@@ -6,9 +6,10 @@ import {
   ImageWithSkeleton,
 } from '../components/Skeleton';
 import { TMDB_IMAGE_BASE } from '../utils/const';
+import { toSlug } from '../utils/utils';
 
 export default function MovieDetails() {
-  const { movie_id, city_name } = useParams();
+  const { movie_id, city_name, movie_name } = useParams();
   const navigate = useNavigate();
 
   const [movie, setMovie] = useState(null);
@@ -19,6 +20,12 @@ export default function MovieDetails() {
     async function fetchMovie() {
       try {
         const { data } = await get(`/movie/${movie_id}`);
+        const correctSlug = toSlug(data.title);
+        if (movie_name != correctSlug) {
+          navigate(`/movies/${city_name}/${correctSlug}/${movie_id}`, {
+            replace: true
+          });
+        }
         setMovie(data);
       } catch (err) {
         console.error(err);
@@ -111,7 +118,11 @@ export default function MovieDetails() {
               onClick={() =>
                 navigate(`/movies/${city_name}/${movie_id}/booking`)
               }
-              className="px-7 py-2.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-semibold rounded-lg text-sm transition-all cursor-pointer mb-6"
+              disabled={!movie.has_shows}
+              className={`px-7 py-2.5 font-semibold rounded-lg text-sm transition-all mb-6 ${movie.has_shows
+                ? 'bg-red-600 hover:bg-red-700 active:scale-95 text-white cursor-pointer'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
             >
               Book Tickets
             </button>

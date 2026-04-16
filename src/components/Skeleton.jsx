@@ -39,6 +39,25 @@ export function CityGridSkeleton() {
   );
 }
 
+export function MovieSliderSkeleton({ count = 5 }) {
+  return (
+    <div className="flex gap-4 overflow-hidden">
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className="flex-shrink-0 w-40 border rounded overflow-hidden bg-white shadow-sm animate-pulse"
+        >
+          <div className="w-full h-56 bg-gray-200" />
+          <div className="p-3">
+            <div className="h-4 w-3/4 bg-gray-200 rounded mb-2" />
+            <div className="h-3 w-1/2 bg-gray-100 rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function MovieGridSkeleton({ count = 8 }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">

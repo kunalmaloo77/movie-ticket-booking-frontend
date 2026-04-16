@@ -18,6 +18,7 @@ import Shows from './pages/admin/Shows';
 import MyBookings from './pages/MyBookings';
 import Screens from './pages/admin/Screens';
 import AddEditSeatLayout from './pages/admin/AddEditSeatLayout';
+import MoviesPage from './pages/MoviesPage';
 
 export default function App() {
   return (
@@ -27,8 +28,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/explore/home/:city_name" element={<ExplorePage />} />
+          <Route path="/explore/movies/:city_name" element={<MoviesPage />} />
           <Route
-            path="/movies/:city_name/:movie_id"
+            path="/movies/:city_name/:movie_name/:movie_id"
             element={<MovieDetails />}
           />
           <Route
@@ -36,7 +38,7 @@ export default function App() {
             element={<BookingPage />}
           />
           <Route
-            path="/movies/:city_name/:movie_id/booking/:show_id"
+            path="/movies/:movie_id/:city_name/seat-selection/:show_id"
             element={<SeatSelectionPage />}
           />
           <Route path="/my-bookings" element={<MyBookings />} />

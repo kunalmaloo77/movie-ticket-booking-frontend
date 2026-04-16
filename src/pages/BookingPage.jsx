@@ -18,7 +18,7 @@ export default function BookingPage() {
       try {
         const region = getCookie('selected_region');
         if (!region) {
-          navigate(`/explore/home/${city_name}`);
+          navigate('/');
           return;
         }
         const { data } = await get(`/cinema/${movie_id}/${region.id}`);
@@ -93,13 +93,7 @@ export default function BookingPage() {
                   <button
                     onClick={() =>
                       navigate(
-                        `/movies/${city_name}/${movie_id}/booking/${cinema.show_id}`,
-                        {
-                          state: {
-                            cinemaName: cinema.cinema_name,
-                            showTime: cinema.show_time,
-                          },
-                        }
+                        `/movies/${movie_id}/${city_name}/seat-selection/${cinema.show_id}?cinemaName=${cinema.cinema_name}&showTime=${formatDateTime(cinema.start_time)}`,
                       )
                     }
                     className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"

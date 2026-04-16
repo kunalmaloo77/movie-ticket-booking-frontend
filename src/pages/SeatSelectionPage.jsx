@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { get, post } from '../api';
 import { SeatGridSkeleton } from '../components/Skeleton';
 
@@ -19,11 +19,10 @@ function loadRazorpayScript() {
 
 export default function SeatSelectionPage() {
   const { city_name, movie_id, show_id } = useParams();
-  const { state } = useLocation();
+  const [searchParams] = useSearchParams();
+  const cinemaName = searchParams.get("cinemaName");
+  const showTime = searchParams.get("showTime");
   const navigate = useNavigate();
-
-  const cinemaName = state?.cinemaName || '';
-  const showTime = state?.showTime || '';
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);

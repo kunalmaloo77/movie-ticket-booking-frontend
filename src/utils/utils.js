@@ -16,3 +16,12 @@ export const capitalize = (str) => {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+
+export function toSlug(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")   // remove special chars except space & hyphen
+    .trim()
+    .replace(/\s+/g, "-")           // replace spaces with hyphen
+    .replace(/-+/g, "-");           // collapse multiple hyphens
+}
