@@ -1,8 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../api';
 
 const AuthContext = createContext();
+
+export default AuthContext;
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
@@ -67,8 +69,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

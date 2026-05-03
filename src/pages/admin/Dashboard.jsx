@@ -17,7 +17,7 @@ export default function Dashboard() {
           <Link
             key={l.to}
             to={l.to}
-            className="border rounded p-6 text-center hover:bg-gray-50 font-medium"
+            className="border border-gray-200 dark:border-gray-700 rounded p-6 text-center hover:bg-gray-50 dark:hover:bg-gray-800 font-medium transition-colors"
           >
             {l.label}
           </Link>

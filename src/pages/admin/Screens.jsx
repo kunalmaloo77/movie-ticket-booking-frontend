@@ -4,23 +4,13 @@ import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const selectStyles = {
-  control: (base, state) => ({
-    ...base,
-    borderRadius: '0.25rem',
-    borderColor: '#000000',
-    paddingTop: '0.175rem',
-    paddingBottom: '0.175rem',
-    boxShadow: state.isFocused ? '0 0 0 2px #d1d5db' : base.boxShadow,
-  }),
-  valueContainer: (base) => ({
-    ...base,
-    padding: '0.175rem 0.75rem',
-  }),
-};
+import { useTheme } from '../../context/useTheme';
+import { getSelectStyles } from '../../utils/selectStyles';
 
 const Screens = () => {
+  const { isDark } = useTheme();
+  const selectStyles = getSelectStyles(isDark);
+
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [cinemas, setCinemas] = useState([]);
   const [cinemaLoading, setCinemaLoading] = useState(false);
@@ -90,7 +80,7 @@ const Screens = () => {
           <button
             disabled={!selectedCinema}
             onClick={handleScreenSubmit}
-            className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 font-medium transition-colors"
           >
             Add/Edit Screens
           </button>

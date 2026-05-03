@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  Link,
+  useSearchParams,
+} from 'react-router-dom';
 import { get } from '../api';
 import { getCookie, setCookie } from '../utils/cookie';
 import { MovieGridSkeleton, ImageWithSkeleton } from '../components/Skeleton';
@@ -12,8 +17,16 @@ export default function MoviesPage() {
 
   const [region, setRegion] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [filterOptions, setFilterOptions] = useState({ languages: [], genres: [], screen_types: [] });
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+  const [filterOptions, setFilterOptions] = useState({
+    languages: [],
+    genres: [],
+    screen_types: [],
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0,
+  });
   const [loadingRegion, setLoadingRegion] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(false);
   const [loadingOptions, setLoadingOptions] = useState(false);
@@ -49,6 +62,7 @@ export default function MoviesPage() {
     }
 
     resolveRegion();
+    //eslint-disable-next-line
   }, [city_name]);
 
   useEffect(() => {
@@ -75,7 +89,11 @@ export default function MoviesPage() {
     get(`/movie/region/${region.id}/filtered?${params.toString()}`)
       .then(({ data, pagination: p }) => {
         setMovies(data);
-        setPagination({ page: p.page, totalPages: p.totalPages, total: p.total });
+        setPagination({
+          page: p.page,
+          totalPages: p.totalPages,
+          total: p.total,
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -103,10 +121,13 @@ export default function MoviesPage() {
 
   const hasActiveFilters = language || genre_id || screen_type_id;
 
+  const selectClass =
+    'border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500';
+
   if (loadingRegion) {
     return (
       <div className="max-w-5xl mx-auto p-6">
-        <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-6" />
+        <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-6" />
         <MovieGridSkeleton />
       </div>
     );
@@ -117,7 +138,7 @@ export default function MoviesPage() {
       <div className="flex items-center gap-2 mb-1">
         <button
           onClick={() => navigate(`/explore/home/${city_name}`)}
-          className="text-sm text-gray-500 hover:text-gray-700"
+          className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
         >
           &larr; Back
         </button>
@@ -125,56 +146,66 @@ export default function MoviesPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">All Movies in {region.city_name}</h1>
         {!loadingMovies && (
-          <span className="text-sm text-gray-400">{pagination.total} movies</span>
+          <span className="text-sm text-gray-400 dark:text-gray-500">
+            {pagination.total} movies
+          </span>
         )}
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6 items-end">
-        {/* Language */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-500 font-medium">Language</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+            Language
+          </label>
           <select
             value={language}
             onChange={(e) => setFilter('language', e.target.value)}
             disabled={loadingOptions}
-            className="border rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-gray-300"
+            className={selectClass}
           >
             <option value="">All languages</option>
             {filterOptions.languages.map((l) => (
-              <option key={l} value={l}>{capitalize(l)}</option>
+              <option key={l} value={l}>
+                {capitalize(l)}
+              </option>
             ))}
           </select>
         </div>
 
-        {/* Genre */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-500 font-medium">Genre</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+            Genre
+          </label>
           <select
             value={genre_id}
             onChange={(e) => setFilter('genre_id', e.target.value)}
             disabled={loadingOptions}
-            className="border rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-gray-300"
+            className={selectClass}
           >
             <option value="">All genres</option>
             {filterOptions.genres.map((g) => (
-              <option key={g.id} value={g.id}>{g.name}</option>
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
             ))}
           </select>
         </div>
 
-        {/* Format */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-500 font-medium">Format</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+            Format
+          </label>
           <select
             value={screen_type_id}
             onChange={(e) => setFilter('screen_type_id', e.target.value)}
             disabled={loadingOptions}
-            className="border rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-gray-300"
+            className={selectClass}
           >
             <option value="">All formats</option>
             {filterOptions.screen_types.map((st) => (
-              <option key={st.id} value={st.id}>{st.name}</option>
+              <option key={st.id} value={st.id}>
+                {st.name}
+              </option>
             ))}
           </select>
         </div>
@@ -182,14 +213,13 @@ export default function MoviesPage() {
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="text-sm text-gray-500 hover:text-gray-700 border rounded px-3 py-1.5 hover:bg-gray-50 transition-colors"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             Clear filters
           </button>
         )}
       </div>
 
-      {/* Movie grid */}
       {loadingMovies && <MovieGridSkeleton />}
 
       {!loadingMovies && movies.length === 0 && (
@@ -205,7 +235,7 @@ export default function MoviesPage() {
               <Link
                 to={`/movies/${city_name}/${toSlug(m.title)}/${m.id}`}
                 key={m.id}
-                className="border rounded overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="border border-gray-200 dark:border-gray-700 rounded overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
               >
                 <ImageWithSkeleton
                   src={`https://image.tmdb.org/t/p/original${m.poster_image_url}`}
@@ -215,30 +245,33 @@ export default function MoviesPage() {
                 />
                 <div className="p-3">
                   <h3 className="font-semibold text-sm truncate">{m.title}</h3>
-                  <p className="text-xs text-gray-500 mt-1">&#9733; {m.rating}</p>
-                  <p className="text-xs text-gray-400 mt-0.5 truncate">{m.genres}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    &#9733; {m.rating}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                    {m.genres}
+                  </p>
                 </div>
               </Link>
             ))}
           </div>
 
-          {/* Pagination */}
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-center gap-3 mt-8">
               <button
                 disabled={page <= 1}
                 onClick={() => setFilter('page', page - 1)}
-                className="border rounded px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                className="border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 Page {page} of {pagination.totalPages}
               </span>
               <button
                 disabled={page >= pagination.totalPages}
                 onClick={() => setFilter('page', page + 1)}
-                className="border rounded px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                className="border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Next
               </button>

@@ -28,6 +28,8 @@ function getGappedRows(ranges) {
   return gaps;
 }
 
+const inputClass = "w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+
 export default function AddEditSeatLayout() {
   const { cinema_id } = useParams();
   const [categories, setCategories] = useState([]);
@@ -256,13 +258,15 @@ export default function AddEditSeatLayout() {
   );
   const gappedRows = getGappedRows(validRanges);
 
+  const borderNormal = 'border-gray-300 dark:border-gray-600';
+  const borderError = 'border-red-500';
+
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <h1 className="text-xl font-bold">
         {editingIndex === null ? 'Add Screens' : 'Edit Screens'}
       </h1>
 
-      {/* Screen name */}
       <div>
         <input
           type="text"
@@ -276,23 +280,18 @@ export default function AddEditSeatLayout() {
               return n;
             });
           }}
-          className={`w-full border rounded px-3 py-2 text-sm ${
-            errors.screenName ? 'border-red-500' : 'border-black'
-          }`}
+          className={`${inputClass} border ${errors.screenName ? borderError : borderNormal}`}
         />
         {errors.screenName && (
           <p className="text-red-500 text-xs mt-1">{errors.screenName}</p>
         )}
       </div>
 
-      {/* Screen type */}
       <div>
         <select
           value={selectedScreenType}
           onChange={(e) => setSelectedScreenType(e.target.value)}
-          className={`w-full border rounded px-3 py-2 text-sm ${
-            errors.selectedScreenType ? 'border-red-500' : 'border-black'
-          }`}
+          className={`${inputClass} border ${errors.selectedScreenType ? borderError : borderNormal}`}
         >
           <option value="">Select Screen Type</option>
           {screenTypes.map((type) => (
@@ -308,14 +307,12 @@ export default function AddEditSeatLayout() {
         )}
       </div>
 
-      {/* Row ranges */}
       <div className="space-y-3">
         <p className="text-sm font-semibold">Row Ranges</p>
 
         {rowRanges.map((range, i) => (
           <div key={i} className="space-y-1">
             <div className="flex gap-2 items-start">
-              {/* Row Start */}
               <input
                 type="text"
                 maxLength={1}
@@ -324,14 +321,11 @@ export default function AddEditSeatLayout() {
                 onChange={(e) =>
                   updateRange(i, 'rowStart', e.target.value.toUpperCase())
                 }
-                className={`w-12 border rounded px-2 py-2 text-sm text-center ${
-                  errors[`range_${i}_rowStart`]
-                    ? 'border-red-500'
-                    : 'border-black'
+                className={`w-12 border rounded px-2 py-2 text-sm text-center bg-white dark:bg-gray-800 dark:text-gray-100 ${
+                  errors[`range_${i}_rowStart`] ? borderError : borderNormal
                 }`}
               />
               <span className="pt-2 text-sm">–</span>
-              {/* Row End */}
               <input
                 type="text"
                 maxLength={1}
@@ -340,31 +334,26 @@ export default function AddEditSeatLayout() {
                 onChange={(e) =>
                   updateRange(i, 'rowEnd', e.target.value.toUpperCase())
                 }
-                className={`w-12 border rounded px-2 py-2 text-sm text-center ${
+                className={`w-12 border rounded px-2 py-2 text-sm text-center bg-white dark:bg-gray-800 dark:text-gray-100 ${
                   errors[`range_${i}_rowEnd`] || errors[`range_${i}_overlap`]
-                    ? 'border-red-500'
-                    : 'border-black'
+                    ? borderError : borderNormal
                 }`}
               />
-              {/* Cols */}
               <input
                 type="number"
                 min={1}
                 placeholder="Cols"
                 value={range.cols}
                 onChange={(e) => updateRange(i, 'cols', e.target.value)}
-                className={`w-20 border rounded px-2 py-2 text-sm ${
-                  errors[`range_${i}_cols`] ? 'border-red-500' : 'border-black'
+                className={`w-20 border rounded px-2 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 ${
+                  errors[`range_${i}_cols`] ? borderError : borderNormal
                 }`}
               />
-              {/* Category */}
               <select
                 value={range.category_id}
                 onChange={(e) => updateRange(i, 'category_id', e.target.value)}
-                className={`flex-1 border rounded px-2 py-2 text-sm ${
-                  errors[`range_${i}_category`]
-                    ? 'border-red-500'
-                    : 'border-black'
+                className={`flex-1 border rounded px-2 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 ${
+                  errors[`range_${i}_category`] ? borderError : borderNormal
                 }`}
               >
                 <option value="">Category</option>
@@ -374,7 +363,6 @@ export default function AddEditSeatLayout() {
                   </option>
                 ))}
               </select>
-              {/* Remove */}
               {rowRanges.length > 1 && (
                 <button
                   onClick={() => removeRowRange(i)}
@@ -385,7 +373,6 @@ export default function AddEditSeatLayout() {
               )}
             </div>
 
-            {/* Per-range error */}
             {(errors[`range_${i}_overlap`] || errors[`range_${i}_rowEnd`]) && (
               <p className="text-red-500 text-xs pl-1">
                 {errors[`range_${i}_overlap`] || errors[`range_${i}_rowEnd`]}
@@ -394,9 +381,8 @@ export default function AddEditSeatLayout() {
           </div>
         ))}
 
-        {/* Gap warning */}
         {gappedRows.length > 0 && (
-          <p className="text-amber-600 text-xs">
+          <p className="text-amber-600 dark:text-amber-400 text-xs">
             Row{gappedRows.length > 1 ? 's' : ''} {gappedRows.join(', ')}{' '}
             {gappedRows.length > 1 ? 'have' : 'has'} no seats — intentional?
           </p>
@@ -404,20 +390,19 @@ export default function AddEditSeatLayout() {
 
         <button
           onClick={() => setRowRanges((prev) => [...prev, { ...EMPTY_RANGE }])}
-          className="text-sm text-gray-500 hover:text-black underline"
+          className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white underline"
         >
           + Add Row Range
         </button>
       </div>
 
-      {/* Form actions */}
       <div className="flex gap-2 flex-col">
         {errors.api && <p className="text-red-500 text-xs">{errors.api}</p>}
         <div className="flex gap-2">
           <button
             onClick={handleAddScreen}
             disabled={saving}
-            className="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-800 disabled:opacity-50"
+            className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-4 py-2 rounded text-sm hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 transition-colors"
           >
             {editingIndex === null ? 'Add Screen' : 'Update Screen'}
           </button>
@@ -425,7 +410,7 @@ export default function AddEditSeatLayout() {
             <button
               onClick={handleCancelEdit}
               disabled={saving}
-              className="border border-gray-400 text-gray-600 px-4 py-2 rounded text-sm hover:border-gray-800 disabled:opacity-50"
+              className="border border-gray-400 dark:border-gray-500 text-gray-600 dark:text-gray-400 px-4 py-2 rounded text-sm hover:border-gray-800 dark:hover:border-gray-300 disabled:opacity-50 transition-colors"
             >
               Cancel
             </button>
@@ -433,25 +418,24 @@ export default function AddEditSeatLayout() {
         </div>
       </div>
 
-      {/* Screens list */}
       {screens.length > 0 && (
-        <div className="border-t pt-4 space-y-2">
+        <div className="border-t dark:border-gray-700 pt-4 space-y-2">
           <p className="text-sm font-semibold">Screens Added</p>
           {screens.map((screen, i) => (
             <div
               key={i}
-              className={`flex items-center justify-between border rounded px-3 py-2 text-sm ${
+              className={`flex items-center justify-between border rounded px-3 py-2 text-sm transition-colors ${
                 editingIndex === i
-                  ? 'border-gray-900 bg-gray-50'
-                  : 'border-gray-200'
+                  ? 'border-gray-900 dark:border-gray-300 bg-gray-50 dark:bg-gray-800'
+                  : 'border-gray-200 dark:border-gray-700'
               }`}
             >
               <div>
                 <p className="font-medium">{screen.name}</p>
-                <p className="text-gray-500 text-xs">
+                <p className="text-gray-500 dark:text-gray-400 text-xs">
                   {getScreenTypeByName(screen.screen_type_id)}
                 </p>
-                <p className="text-gray-500 text-xs">
+                <p className="text-gray-500 dark:text-gray-400 text-xs">
                   {screen.row_ranges
                     .map(
                       (r) =>
@@ -459,21 +443,21 @@ export default function AddEditSeatLayout() {
                     )
                     .join('  |  ')}
                 </p>
-                <p className="text-gray-500 text-xs">
+                <p className="text-gray-500 dark:text-gray-400 text-xs">
                   {screen.total_capacity} seats
                 </p>
               </div>
               <div className="flex gap-3 ml-4 shrink-0">
                 <button
                   onClick={() => handleEditScreen(i)}
-                  className="text-xs text-gray-500 hover:text-black underline"
+                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white underline"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteScreen(i)}
                   disabled={saving}
-                  className="text-xs text-gray-500 hover:text-red-500 underline disabled:opacity-50"
+                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 underline disabled:opacity-50"
                 >
                   Delete
                 </button>

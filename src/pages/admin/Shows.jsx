@@ -3,23 +3,15 @@ import { get, post } from '../../api';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { debounce } from '../../utils/cookie';
+import { useTheme } from '../../context/useTheme';
+import { getSelectStyles } from '../../utils/selectStyles';
 
-const selectStyles = {
-  control: (base, state) => ({
-    ...base,
-    borderRadius: '0.25rem',
-    borderColor: '#000000',
-    paddingTop: '0.175rem',
-    paddingBottom: '0.175rem',
-    boxShadow: state.isFocused ? '0 0 0 2px #d1d5db' : base.boxShadow,
-  }),
-  valueContainer: (base) => ({
-    ...base,
-    padding: '0.175rem 0.75rem',
-  }),
-};
+const inputClass = "w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500";
 
 export default function Shows() {
+  const { isDark } = useTheme();
+  const selectStyles = getSelectStyles(isDark);
+
   const [form, setForm] = useState({
     movie_id: '',
     screen_id: '',
@@ -186,7 +178,7 @@ export default function Shows() {
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-xl font-bold mb-4">Create Show</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {msg && <p className="text-green-600 text-sm">{msg}</p>}
+        {msg && <p className="text-green-600 dark:text-green-400 text-sm">{msg}</p>}
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <AsyncSelect
@@ -240,7 +232,7 @@ export default function Shows() {
           onChange={(e) =>
             setForm((prev) => ({ ...prev, start_time: e.target.value }))
           }
-          className="w-full border rounded px-3 py-2 outline-none focus:ring-2 focus:ring-gray-300"
+          className={inputClass}
           required
         />
 
@@ -252,27 +244,27 @@ export default function Shows() {
           onChange={(e) =>
             setForm((prev) => ({ ...prev, language: e.target.value }))
           }
-          className="w-full border rounded px-3 py-2 outline-none focus:ring-2 focus:ring-gray-300"
+          className={inputClass}
           required
         />
 
         {categories.length > 0 && (
-          <div className="border rounded p-4 space-y-3">
-            <p className="text-sm font-semibold text-gray-700">
+          <div className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50">
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
               Price per Seat Category
             </p>
             {categories.map((cat) => (
               <div key={cat.id} className="flex items-center gap-3">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                     {cat.name}
                   </p>
                   {cat.description && (
-                    <p className="text-xs text-gray-400">{cat.description}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{cat.description}</p>
                   )}
                 </div>
                 <div className="relative w-32 shrink-0">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm">
                     ₹
                   </span>
                   <input
@@ -287,7 +279,7 @@ export default function Shows() {
                     onChange={(e) =>
                       handleCategoryPriceChange(cat.id, e.target.value)
                     }
-                    className="w-full border rounded pl-7 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gray-300"
+                    className={`w-full border border-gray-300 dark:border-gray-600 rounded pl-7 pr-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600`}
                     required
                   />
                 </div>
@@ -298,7 +290,7 @@ export default function Shows() {
 
         <button
           type="submit"
-          className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 cursor-pointer"
+          className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer font-medium transition-colors"
         >
           Create Show
         </button>
