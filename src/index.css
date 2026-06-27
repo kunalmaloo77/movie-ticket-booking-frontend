@@ -9,3 +9,13 @@
     @apply bg-gray-950 text-gray-100;
   }
 }
+
+.swal-confirm-btn-light {
+  background: #111827 !important;
+  color: #111827 !important;
+}
+
+.swal-confirm-btn-dark {
+  background: #f9fafb !important;
+  color: #111827 !important;
+}

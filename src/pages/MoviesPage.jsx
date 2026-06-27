@@ -8,7 +8,7 @@ import {
 import { get } from '../api';
 import { getCookie, setCookie } from '../utils/cookie';
 import { MovieGridSkeleton, ImageWithSkeleton } from '../components/Skeleton';
-import { toSlug, capitalize } from '../utils/utils';
+import { toSlug } from '../utils/utils';
 
 export default function MoviesPage() {
   const { city_name } = useParams();
@@ -31,7 +31,7 @@ export default function MoviesPage() {
   const [loadingMovies, setLoadingMovies] = useState(false);
   const [loadingOptions, setLoadingOptions] = useState(false);
 
-  const language = searchParams.get('language') || '';
+  const language_id = searchParams.get('language_id') || '';
   const genre_id = searchParams.get('genre_id') || '';
   const screen_type_id = searchParams.get('screen_type_id') || '';
   const page = parseInt(searchParams.get('page') || '1');
@@ -82,7 +82,7 @@ export default function MoviesPage() {
 
     const params = new URLSearchParams();
     params.set('page', page);
-    if (language) params.set('language', language);
+    if (language_id) params.set('language_id', language_id);
     if (genre_id) params.set('genre_id', genre_id);
     if (screen_type_id) params.set('screen_type_id', screen_type_id);
 
@@ -100,7 +100,7 @@ export default function MoviesPage() {
         setMovies([]);
       })
       .finally(() => setLoadingMovies(false));
-  }, [region, language, genre_id, screen_type_id, page]);
+  }, [region, language_id, genre_id, screen_type_id, page]);
 
   const setFilter = (key, value) => {
     setSearchParams((prev) => {
@@ -119,7 +119,7 @@ export default function MoviesPage() {
     setSearchParams({});
   };
 
-  const hasActiveFilters = language || genre_id || screen_type_id;
+  const hasActiveFilters = language_id || genre_id || screen_type_id;
 
   const selectClass =
     'border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500';
@@ -158,15 +158,15 @@ export default function MoviesPage() {
             Language
           </label>
           <select
-            value={language}
-            onChange={(e) => setFilter('language', e.target.value)}
+            value={language_id}
+            onChange={(e) => setFilter('language_id', e.target.value)}
             disabled={loadingOptions}
             className={selectClass}
           >
             <option value="">All languages</option>
             {filterOptions.languages.map((l) => (
-              <option key={l} value={l}>
-                {capitalize(l)}
+              <option key={l.id} value={l.id}>
+                {l.name}
               </option>
             ))}
           </select>

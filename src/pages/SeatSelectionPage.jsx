@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { get, post } from '../api';
-import { SeatGridSkeleton } from '../components/Skeleton';
+import { SeatGridSkeleton } from '../components/Skeleton.jsx';
 
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -19,9 +19,6 @@ function loadRazorpayScript() {
 
 export default function SeatSelectionPage() {
   const { city_name, movie_id, show_id } = useParams();
-  const [searchParams] = useSearchParams();
-  const cinemaName = searchParams.get("cinemaName");
-  const showTime = searchParams.get("showTime");
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
@@ -30,19 +27,21 @@ export default function SeatSelectionPage() {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [booking, setBooking] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [showDetails, setShowDetails] = useState({});
 
   useEffect(() => {
-    const fetchSeats = async () => {
+    const fetchShowDetails = async () => {
       try {
-        const { data } = await get(`/seats/show/${show_id}`);
-        setRows(data);
+        const { data } = await get(`/show/${show_id}/details`);
+        setRows(data.seats);
+        setShowDetails(data.show);
       } catch (err) {
         setError(err.message || 'Failed to load seats');
       } finally {
         setLoading(false);
       }
     };
-    fetchSeats();
+    fetchShowDetails();
   }, [show_id]);
 
   const toggleSeat = (seat, row) => {
@@ -74,7 +73,7 @@ export default function SeatSelectionPage() {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login', {
-        state: { from: `/movies/${city_name}/${movie_id}/booking/${show_id}` },
+        state: { from: `/movies/${movie_id}/${city_name}/seat-selection/${show_id}` },
       });
       return;
     }
@@ -99,7 +98,7 @@ export default function SeatSelectionPage() {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         currency: orderData.currency,
         name: 'Movie Ticket Booking',
-        description: `${cinemaName} | ${showTime}`,
+        description: `${showDetails.cinema_name} | ${showDetails.start_time}`,
         order_id: orderData.razorpayOrderId,
         handler: async (response) => {
           try {
@@ -142,8 +141,8 @@ export default function SeatSelectionPage() {
         <h2 className="text-2xl font-bold mb-2">
           Booking Confirmed!
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-1">{cinemaName}</p>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Show: {showTime}</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-1">{showDetails.cinema_name}</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">Show: {showDetails.start_time}</p>
         <p className="text-gray-700 dark:text-gray-300 mb-8">
           Seats:{' '}
           <span className="font-medium">
@@ -170,8 +169,8 @@ export default function SeatSelectionPage() {
       </button>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">{cinemaName}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Show: {showTime}</p>
+        <h1 className="text-2xl font-bold">{showDetails?.cinema_name}</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Show: {showDetails?.start_time}</p>
       </div>
 
       {loading ? (

@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { get, post } from '../../api';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { debounce } from '../../utils/cookie';
 import { useTheme } from '../../context/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
+import Button from '../../components/Button';
+import { showSuccess, showError } from '../../utils/swal';
 
 const inputClass = "w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500";
 
@@ -16,12 +18,11 @@ export default function Shows() {
     movie_id: '',
     screen_id: '',
     start_time: '',
-    language: '',
+    language_id: '',
     category_prices: [],
   });
-  const [msg, setMsg] = useState('');
-  const [error, setError] = useState('');
   const [movies, setMovies] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [cinemas, setCinemas] = useState([]);
   const [cinemasLoading, setCinemasLoading] = useState(false);
@@ -29,6 +30,15 @@ export default function Shows() {
   const [screens, setScreens] = useState(null);
   const [screensLoading, setScreensLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    get('/show/languages')
+      .then(({ data }) =>
+        setLanguages(data.map((l) => ({ value: l.id, label: l.name })))
+      )
+      .catch((err) => console.error('Failed to fetch languages:', err));
+  }, []);
 
   const fetchCategories = async (screen_id) => {
     try {
@@ -124,10 +134,6 @@ export default function Shows() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setMsg('');
-    setError('');
-
-    console.log('Submitting form with data:', form);
 
     const category_price = form.category_prices.map((c) => ({
       category_id: c.category_id,
@@ -135,33 +141,39 @@ export default function Shows() {
     }));
 
     if (category_price.some((c) => isNaN(c.price) || c.price <= 0)) {
-      setError('Please enter a valid price for all seat categories.');
+      showError(
+        'Please enter a valid price for all seat categories.',
+        'Invalid input'
+      );
       return;
     }
 
+    setLoading(true);
     try {
       const body = {
         movie_id: parseInt(form.movie_id),
         screen_id: parseInt(form.screen_id),
         start_time: form.start_time,
-        language: form.language,
+        language_id: form.language_id ? parseInt(form.language_id) : undefined,
         category_price,
       };
       const { data } = await post('/show', body);
-      setMsg(`Show created (id: ${data.id}) on ${data.start_time}`);
       setForm({
         movie_id: '',
         screen_id: '',
         start_time: '',
-        language: '',
+        language_id: '',
         category_prices: [],
       });
       setSelectedRegion(null);
       setSelectedCinema(null);
       setCinemas([]);
       setScreens(null);
+      showSuccess(`Show created (id: ${data.id}) on ${data.start_time}`);
     } catch (err) {
-      setError(err.message);
+      showError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -178,9 +190,6 @@ export default function Shows() {
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-xl font-bold mb-4">Create Show</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {msg && <p className="text-green-600 dark:text-green-400 text-sm">{msg}</p>}
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
         <AsyncSelect
           placeholder="Select Movie"
           defaultOptions
@@ -235,17 +244,29 @@ export default function Shows() {
           className={inputClass}
           required
         />
-
-        <input
-          type="text"
-          name="language"
-          placeholder="Language (e.g. English, Hindi)"
-          value={form.language}
-          onChange={(e) =>
-            setForm((prev) => ({ ...prev, language: e.target.value }))
+        <Select
+          placeholder={screensLoading ? 'Loading screens...' : 'Select Screen'}
+          options={languages}
+          value={
+            screens
+              ? (screens.find((s) => s.value === form.screen_id) ?? null)
+              : null
           }
-          className={inputClass}
+          onChange={handleScreenChange}
+          isDisabled={!selectedCinema || screensLoading}
+          styles={selectStyles}
           required
+        />
+        <Select
+          placeholder="Select Language"
+          options={languages}
+          value={
+            languages.find((l) => l.value === form.language_id) ?? null
+          }
+          onChange={(selected) =>
+            setForm((prev) => ({ ...prev, language_id: selected?.value ?? '' }))
+          }
+          styles={selectStyles}
         />
 
         {categories.length > 0 && (
@@ -288,12 +309,9 @@ export default function Shows() {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer font-medium transition-colors"
-        >
+        <Button type="submit" fullWidth loading={loading} loadingText="Creating…">
           Create Show
-        </button>
+        </Button>
       </form>
     </div>
   );

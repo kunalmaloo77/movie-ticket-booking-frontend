@@ -12,6 +12,16 @@ export const formatDateTime = (dateTimeStr) => {
   });
 };
 
+export const formatDateToMMDDYYYY = (d) => {
+  // mm-dd-yyyy
+  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${d.getFullYear()}`;
+}
+
+export const formatDateToDDMMYYYY = (d) => {
+  // mm-dd-yyyy
+  return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+}
+
 export const capitalize = (str) => {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

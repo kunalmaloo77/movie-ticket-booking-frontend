@@ -4,6 +4,8 @@ import Select from 'react-select';
 import { TMDB_IMAGE_BASE } from '../../utils/const';
 import { useTheme } from '../../context/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
+import Button from '../../components/Button';
+import { showSuccess, showError } from '../../utils/swal';
 
 const EMPTY_FORM = {
   title: '',
@@ -26,7 +28,6 @@ const inputClass =
 function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
   const selectStyles = getSelectStyles(isDark);
   const [form, setForm] = useState(EMPTY_FORM);
-  const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -50,7 +51,6 @@ function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
     } else {
       setForm(EMPTY_FORM);
     }
-    setError('');
   }, [mode, movie]);
 
   function update(field) {
@@ -59,7 +59,6 @@ function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError('');
     setSaving(true);
     try {
       const body = {
@@ -85,8 +84,13 @@ function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
 
       onSaved();
       onClose();
+      showSuccess(
+        mode === 'edit'
+          ? `Movie updated: ${form.title}`
+          : `Movie created: ${form.title}`
+      );
     } catch (err) {
-      setError(err.message);
+      showError(err.message);
     } finally {
       setSaving(false);
     }
@@ -113,8 +117,6 @@ function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-3 flex-1">
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
           {mode === 'edit' && movie?.source === 'tmdb' && (
             <p className="text-amber-600 dark:text-amber-400 text-sm bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded px-3 py-2">
               This movie was imported from TMDB. Manual edits may be overwritten
@@ -246,17 +248,16 @@ function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
             styles={selectStyles}
           />
 
-          <button
+          <Button
             type="submit"
-            disabled={saving}
-            className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 cursor-pointer text-sm font-medium mt-2 transition-colors"
+            fullWidth
+            size="sm"
+            loading={saving}
+            loadingText="Saving…"
+            className="mt-2"
           >
-            {saving
-              ? 'Saving…'
-              : mode === 'edit'
-                ? 'Save Changes'
-                : 'Create Movie'}
-          </button>
+            {mode === 'edit' ? 'Save Changes' : 'Create Movie'}
+          </Button>
         </form>
       </div>
     </div>
@@ -287,8 +288,7 @@ export default function Movies() {
   const [deleting, setDeleting] = useState(false);
 
   const [genreName, setGenreName] = useState('');
-  const [genreMsg, setGenreMsg] = useState('');
-  const [genreError, setGenreError] = useState('');
+  const [genreSaving, setGenreSaving] = useState(false);
 
   const fetchMovies = useCallback(
     async (page = 1) => {
@@ -376,16 +376,17 @@ export default function Movies() {
 
   async function handleGenre(e) {
     e.preventDefault();
-    setGenreMsg('');
-    setGenreError('');
+    setGenreSaving(true);
     try {
       const data = await post('/movie/genre/', { name: genreName });
-      setGenreMsg(`Genre created: ${data.genre?.name ?? genreName}`);
       setGenreName('');
       const { data: updated } = await get('/movie/genres');
       setGenres(updated);
+      showSuccess(`Genre created: ${data.genre?.name ?? genreName}`);
     } catch (err) {
-      setGenreError(err.message);
+      showError(err.message);
+    } finally {
+      setGenreSaving(false);
     }
   }
 
@@ -553,12 +554,6 @@ export default function Movies() {
       <div className="max-w-md">
         <h1 className="text-xl font-bold mb-4">Create Genre</h1>
         <form onSubmit={handleGenre} className="space-y-3">
-          {genreMsg && (
-            <p className="text-green-600 dark:text-green-400 text-sm">
-              {genreMsg}
-            </p>
-          )}
-          {genreError && <p className="text-red-500 text-sm">{genreError}</p>}
           <input
             type="text"
             placeholder="Genre Name"
@@ -567,12 +562,14 @@ export default function Movies() {
             className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             required
           />
-          <button
+          <Button
             type="submit"
-            className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer font-medium transition-colors"
+            fullWidth
+            loading={genreSaving}
+            loadingText="Creating…"
           >
             Create Genre
-          </button>
+          </Button>
         </form>
       </div>
 

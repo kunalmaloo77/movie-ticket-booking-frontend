@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { get, post, patch, del } from '../../api';
+import Button from '../../components/Button';
+import { showSuccess, showError } from '../../utils/swal';
 
 const EMPTY_RANGE = { rowStart: '', rowEnd: '', cols: '', category_id: '' };
 
@@ -142,6 +144,7 @@ export default function AddEditSeatLayout() {
           row_ranges: data.row_ranges,
         };
         setScreens((prev) => [...prev, newItem]);
+        showSuccess(`Screen created: ${newItem.name}`);
       } else {
         const screenId = screens[editingIndex].id;
         console.log(screens, 'Screens');
@@ -184,6 +187,7 @@ export default function AddEditSeatLayout() {
         );
         setOriginalScreen(null);
         setEditingIndex(null);
+        showSuccess(`Screen updated: ${newItem.name}`);
       }
 
       setScreenName('');
@@ -192,7 +196,7 @@ export default function AddEditSeatLayout() {
       setErrors({});
     } catch (err) {
       console.error('Error Adding Updating screen', err);
-      setErrors({ api: err.message });
+      showError(err.message);
     } finally {
       setSaving(false);
     }
@@ -229,8 +233,9 @@ export default function AddEditSeatLayout() {
         setRowRanges([{ ...EMPTY_RANGE }]);
         setEditingIndex(null);
       }
+      showSuccess('Screen deleted');
     } catch (err) {
-      setErrors({ api: err.message });
+      showError(err.message);
     } finally {
       setSaving(false);
     }
@@ -397,23 +402,24 @@ export default function AddEditSeatLayout() {
       </div>
 
       <div className="flex gap-2 flex-col">
-        {errors.api && <p className="text-red-500 text-xs">{errors.api}</p>}
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={handleAddScreen}
-            disabled={saving}
-            className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-4 py-2 rounded text-sm hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 transition-colors"
+            size="sm"
+            loading={saving}
+            loadingText={editingIndex === null ? 'Adding…' : 'Updating…'}
           >
             {editingIndex === null ? 'Add Screen' : 'Update Screen'}
-          </button>
+          </Button>
           {editingIndex !== null && (
-            <button
+            <Button
               onClick={handleCancelEdit}
+              size="sm"
+              variant="outline"
               disabled={saving}
-              className="border border-gray-400 dark:border-gray-500 text-gray-600 dark:text-gray-400 px-4 py-2 rounded text-sm hover:border-gray-800 dark:hover:border-gray-300 disabled:opacity-50 transition-colors"
             >
               Cancel
-            </button>
+            </Button>
           )}
         </div>
       </div>

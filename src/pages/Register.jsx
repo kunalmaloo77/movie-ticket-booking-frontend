@@ -10,17 +10,21 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+    setLoading(true);
     try {
       await register(username, email, password);
       navigate('/');
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -58,9 +62,16 @@ export default function Register() {
         />
         <button
           type="submit"
-          className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer font-medium transition-colors"
+          disabled={loading}
+          className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          Register
+          {loading && (
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+          )}
+          {loading ? 'Registering…' : 'Register'}
         </button>
         <p className="text-sm text-center mt-4 text-gray-600 dark:text-gray-400">
           Have an account?{' '}

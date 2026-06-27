@@ -105,7 +105,7 @@ function downloadReceipt(booking) {
 </head>
 <body>
   <div class="header">
-    <span class="app-name">CineBook</span>
+    <span class="app-name">Moviebook</span>
     <span class="receipt-label">Receipt</span>
   </div>
 
@@ -239,10 +239,9 @@ export default function MyBookings() {
                     </p>
                   </div>
                   <span
-                    className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${
-                      STATUS_STYLES[booking.status] ||
+                    className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${STATUS_STYLES[booking.status] ||
                       'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                    }`}
+                      }`}
                   >
                     {STATUS_LABELS[booking.status] || booking.status}
                   </span>

@@ -6,8 +6,6 @@ import { MovieSliderSkeleton, ImageWithSkeleton } from '../components/Skeleton';
 import { toSlug } from '../utils/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const SLIDER_MAX = 10;
-
 export default function ExplorePage() {
   const { city_name } = useParams();
   const navigate = useNavigate();
@@ -66,7 +64,7 @@ export default function ExplorePage() {
     async function fetchMovies() {
       try {
         const { data } = await get(`/movie/region/${region.id}`);
-        setMovies(data.slice(0, SLIDER_MAX));
+        setMovies(data);
       } catch (error) {
         console.error(error);
         setMovies([]);
