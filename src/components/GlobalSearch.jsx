@@ -28,8 +28,8 @@ export default function GlobalSearch() {
       setOpen(true);
       try {
         const [movieRes, cinemaRes] = await Promise.all([
-          get(`/movie?search=${encodeURIComponent(query.trim())}`),
-          get(`/cinema/search?q=${encodeURIComponent(query.trim())}`),
+          get(`/movie?q=${encodeURIComponent(query.trim())}`),
+          get(`/cinema?q=${encodeURIComponent(query.trim())}`),
         ]);
         setMovies(movieRes.data?.slice(0, 5) || []);
         setCinemas(cinemaRes.data?.slice(0, 5) || []);

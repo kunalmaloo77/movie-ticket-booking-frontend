@@ -294,7 +294,7 @@ export default function Movies() {
     async (page = 1) => {
       try {
         const params = new URLSearchParams({ page });
-        if (search) params.set('search', search);
+        if (search) params.set('q', search);
         const { data, pagination: pg } = await get(`/movie?${params}`);
         setMovies(data);
         setPagination({
