@@ -5,7 +5,7 @@ import { del, get, post, put } from '../../api';
 import Button from '../../components/Button';
 import { useTheme } from '../../context/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
-import { showError, showSuccess } from '../../utils/swal';
+import { showError, showSuccess } from '../../utils/swal_utils';
 import { debounce } from '../../utils/utils';
 
 const EMPTY_FORM = {
@@ -194,7 +194,7 @@ export default function Shows() {
     try {
       const params = new URLSearchParams();
       if (inputValue?.trim()) {
-        params.set('search', inputValue.trim());
+        params.set('q', inputValue.trim());
       }
       const { data } = await get(
         `/region${params.toString() ? `?${params}` : ''}`

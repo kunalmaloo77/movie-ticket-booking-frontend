@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { del, get, post, put } from '../../api';
 import Button from '../../components/Button';
-import { showConfirm, showError, showSuccess } from '../../utils/swal';
+import {
+  showConfirm,
+  showError,
+  showSuccess,
+} from '../../utils/swal_utils.jsx';
 
 const EMPTY_FORM = {
   city_code: '',

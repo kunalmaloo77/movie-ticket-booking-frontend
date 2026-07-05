@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { get, post, patch, del } from '../../api';
 import Button from '../../components/Button';
-import { showSuccess, showError } from '../../utils/swal';
+import { showSuccess, showError } from '../../utils/swal_utils';
 
 const EMPTY_RANGE = { rowStart: '', rowEnd: '', cols: '', category_id: '' };
 
@@ -30,7 +30,8 @@ function getGappedRows(ranges) {
   return gaps;
 }
 
-const inputClass = "w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+const inputClass =
+  'w-full border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500';
 
 export default function AddEditSeatLayout() {
   const { cinema_id } = useParams();
@@ -341,7 +342,8 @@ export default function AddEditSeatLayout() {
                 }
                 className={`w-12 border rounded px-2 py-2 text-sm text-center bg-white dark:bg-gray-800 dark:text-gray-100 ${
                   errors[`range_${i}_rowEnd`] || errors[`range_${i}_overlap`]
-                    ? borderError : borderNormal
+                    ? borderError
+                    : borderNormal
                 }`}
               />
               <input

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { post } from '../../api';
 import Button from '../../components/Button';
-import { showSuccess, showError } from '../../utils/swal';
+import { showSuccess, showError } from '../../utils/swal_utils';
 
-const inputClass = "w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+const inputClass =
+  'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500';
 
 export default function Cinemas() {
   const [cinemaName, setCinemaName] = useState('');
@@ -61,7 +62,12 @@ export default function Cinemas() {
           className={inputClass}
           required
         />
-        <Button type="submit" fullWidth loading={loading} loadingText="Creating…">
+        <Button
+          type="submit"
+          fullWidth
+          loading={loading}
+          loadingText="Creating…"
+        >
           Create Cinema
         </Button>
       </form>

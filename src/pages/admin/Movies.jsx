@@ -5,7 +5,7 @@ import { TMDB_IMAGE_BASE } from '../../utils/const';
 import { useTheme } from '../../context/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
 import Button from '../../components/Button';
-import { showSuccess, showError } from '../../utils/swal';
+import { showSuccess, showError } from '../../utils/swal_utils';
 
 const EMPTY_FORM = {
   title: '',
