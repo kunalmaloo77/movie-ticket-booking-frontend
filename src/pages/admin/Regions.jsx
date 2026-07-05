@@ -80,7 +80,7 @@ export default function Regions() {
     try {
       const params = new URLSearchParams({ page: String(page) });
       if (query) {
-        params.set('search', query);
+        params.set('q', query);
       }
 
       const { data, pagination: pageInfo } = await get(`/region?${params}`);
