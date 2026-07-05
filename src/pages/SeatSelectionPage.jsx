@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get, post } from '../api';
 import { SeatGridSkeleton } from '../components/Skeleton.jsx';
+import { formatDateTime } from '../utils/utils.js';
 
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -73,7 +74,9 @@ export default function SeatSelectionPage() {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login', {
-        state: { from: `/movies/${movie_id}/${city_name}/seat-selection/${show_id}` },
+        state: {
+          from: `/movies/${movie_id}/${city_name}/seat-selection/${show_id}`,
+        },
       });
       return;
     }
@@ -138,11 +141,13 @@ export default function SeatSelectionPage() {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center mt-16">
         <div className="text-green-500 text-5xl mb-4">&#10003;</div>
-        <h2 className="text-2xl font-bold mb-2">
-          Booking Confirmed!
-        </h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-1">{showDetails.cinema_name}</p>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Show: {showDetails.start_time}</p>
+        <h2 className="text-2xl font-bold mb-2">Booking Confirmed!</h2>
+        <p className="text-gray-500 dark:text-gray-400 mb-1">
+          {showDetails.cinema_name}
+        </p>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
+          Show: {formatDateTime(showDetails.start_time)}
+        </p>
         <p className="text-gray-700 dark:text-gray-300 mb-8">
           Seats:{' '}
           <span className="font-medium">
@@ -170,7 +175,9 @@ export default function SeatSelectionPage() {
 
       <div className="mb-6">
         <h1 className="text-2xl font-bold">{showDetails?.cinema_name}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Show: {showDetails?.start_time}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          Show: {formatDateTime(showDetails?.start_time)}
+        </p>
       </div>
 
       {loading ? (
@@ -236,14 +243,14 @@ export default function SeatSelectionPage() {
               </p>
               <p className="text-gray-500 dark:text-gray-400 mt-0.5">
                 {selectedSeats
-                  .map((s) => s.row_label.toString() + s.column_label.toString())
+                  .map(
+                    (s) => s.row_label.toString() + s.column_label.toString()
+                  )
                   .join(', ')}
               </p>
             </div>
             <div className="flex items-center gap-4 shrink-0">
-              <p className="text-lg font-bold">
-                ₹{totalPrice.toFixed(2)}
-              </p>
+              <p className="text-lg font-bold">₹{totalPrice.toFixed(2)}</p>
               <button
                 onClick={confirmBooking}
                 disabled={booking}
