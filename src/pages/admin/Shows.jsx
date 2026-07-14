@@ -259,7 +259,7 @@ export default function Shows() {
       setter(
         Array.isArray(data)
           ? data.map((cinema) => ({
-              value: cinema.id,
+              value: cinema.cinema_id,
               label: cinema.cinema_name,
             }))
           : []
@@ -352,6 +352,8 @@ export default function Shows() {
       screen_id: '',
       category_prices: [],
     }));
+
+    console.log(option, 'option cinema');
 
     if (option?.value) {
       await fetchScreens(option.value);

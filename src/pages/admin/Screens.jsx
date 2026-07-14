@@ -20,7 +20,7 @@ const Screens = () => {
   async function fetchRegions(inputValue) {
     try {
       const { data } = await get(
-        '/region' + (inputValue && `?search=${inputValue}`)
+        '/region' + (inputValue && `?q=${inputValue}`)
       );
       return data.map((r) => ({ value: r.id, label: r.city_name }));
     } catch (error) {
@@ -36,7 +36,9 @@ const Screens = () => {
     setCinemaLoading(true);
     try {
       const { data } = await get(`/cinema?region_id=${selected.value}`);
-      setCinemas(data.map((c) => ({ value: c.id, label: c.cinema_name })));
+      setCinemas(
+        data.map((c) => ({ value: c.cinema_id, label: c.cinema_name }))
+      );
     } catch (error) {
       console.error('Error fetching cinemas:', error);
     } finally {
@@ -49,6 +51,7 @@ const Screens = () => {
   }
 
   async function handleScreenSubmit() {
+    console.log(selectedCinema, 'selectedCinema');
     if (!selectedCinema) {
       alert('Please select a cinema');
       return;
