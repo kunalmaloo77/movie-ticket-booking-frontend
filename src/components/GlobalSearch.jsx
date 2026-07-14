@@ -28,8 +28,8 @@ export default function GlobalSearch() {
       setOpen(true);
       try {
         const [movieRes, cinemaRes] = await Promise.all([
-          get(`/movie?search=${encodeURIComponent(query.trim())}`),
-          get(`/cinema/search?q=${encodeURIComponent(query.trim())}`),
+          get(`/movie?q=${encodeURIComponent(query.trim())}`),
+          get(`/cinema?q=${encodeURIComponent(query.trim())}`),
         ]);
         setMovies(movieRes.data?.slice(0, 5) || []);
         setCinemas(cinemaRes.data?.slice(0, 5) || []);
@@ -80,7 +80,7 @@ export default function GlobalSearch() {
       </div>
 
       {open && (
-        <div className="absolute top-full mt-1 right-0 w-40 sm:w-56 md:w-72 lg:w-80 bg-white rounded shadow-lg border z-50 max-h-96 overflow-y-auto text-gray-900">
+        <div className="absolute top-full mt-1 w-40 sm:w-56 md:w-72 lg:w-80 bg-white rounded shadow-lg border z-50 max-h-96 overflow-y-auto text-gray-900">
           {loading && (
             <p className="text-xs text-gray-400 px-3 py-2">Searching...</p>
           )}

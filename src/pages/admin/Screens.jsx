@@ -35,7 +35,7 @@ const Screens = () => {
     if (!selected) return;
     setCinemaLoading(true);
     try {
-      const { data } = await get(`/cinema/search?region_id=${selected.value}`);
+      const { data } = await get(`/cinema?region_id=${selected.value}`);
       setCinemas(data.map((c) => ({ value: c.id, label: c.cinema_name })));
     } catch (error) {
       console.error('Error fetching cinemas:', error);

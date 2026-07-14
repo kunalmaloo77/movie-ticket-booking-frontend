@@ -5,7 +5,7 @@ import { TMDB_IMAGE_BASE } from '../../utils/const';
 import { useTheme } from '../../context/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
 import Button from '../../components/Button';
-import { showSuccess, showError } from '../../utils/swal';
+import { showSuccess, showError } from '../../utils/swal_utils';
 
 const EMPTY_FORM = {
   title: '',
@@ -294,7 +294,7 @@ export default function Movies() {
     async (page = 1) => {
       try {
         const params = new URLSearchParams({ page });
-        if (search) params.set('search', search);
+        if (search) params.set('q', search);
         const { data, pagination: pg } = await get(`/movie?${params}`);
         setMovies(data);
         setPagination({

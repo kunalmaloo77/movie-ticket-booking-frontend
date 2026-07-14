@@ -6,9 +6,12 @@ import { useAuth } from '../context/useAuth';
 import { BookingListSkeleton } from '../components/Skeleton';
 
 const STATUS_STYLES = {
-  PAYMENT_SUCCESS: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
-  CREATED: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
-  PAYMENT_FAILED: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
+  PAYMENT_SUCCESS:
+    'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
+  CREATED:
+    'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
+  PAYMENT_FAILED:
+    'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
   EXPIRED: 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400',
 };
 
@@ -147,7 +150,7 @@ function downloadReceipt(booking) {
 
   <p class="footer">This is a computer-generated receipt and does not require a signature.</p>
 
-  <script>window.print();<\/script>
+  <script>window.print();</script>
 </body>
 </html>`;
 
@@ -211,14 +214,20 @@ export default function MyBookings() {
         <div className="flex flex-col gap-4">
           {bookings.map((booking) => {
             const seatDisplay = groupSeatsByCategory(booking.seats);
-            const bookedOn = new Date(booking.created_at).toLocaleString('en-IN', {
-              dateStyle: 'medium',
-              timeStyle: 'short',
-            });
-            const showTime = new Date(booking.show_time).toLocaleString('en-IN', {
-              dateStyle: 'medium',
-              timeStyle: 'short',
-            });
+            const bookedOn = new Date(booking.created_at).toLocaleString(
+              'en-IN',
+              {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              }
+            );
+            const showTime = new Date(booking.show_time).toLocaleString(
+              'en-IN',
+              {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              }
+            );
 
             return (
               <div
@@ -232,16 +241,18 @@ export default function MyBookings() {
                       {booking.movie_title}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                      {booking.cinema_name} &middot; {booking.screen_name} &middot; {booking.screen_type}
+                      {booking.cinema_name} &middot; {booking.screen_name}{' '}
+                      &middot; {booking.screen_type}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                       {showTime} &middot; {booking.language}
                     </p>
                   </div>
                   <span
-                    className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${STATUS_STYLES[booking.status] ||
+                    className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${
+                      STATUS_STYLES[booking.status] ||
                       'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                      }`}
+                    }`}
                   >
                     {STATUS_LABELS[booking.status] || booking.status}
                   </span>
