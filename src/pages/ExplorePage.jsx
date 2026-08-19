@@ -1,21 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { get } from '../api';
-import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
+import { setCookie } from '../utils/cookie';
 import { MovieSliderSkeleton, ImageWithSkeleton } from '../components/Skeleton';
-import { toSlug } from '../utils/utils';
+import { capitalize, toSlug } from '../utils/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRegion } from '../hooks/useRegion';
+import CitySelectorModal from '../components/CitySelectorModal';
 
 export default function ExplorePage() {
   const { city_name } = useParams();
   const navigate = useNavigate();
-
-  const [region, setRegion] = useState(null);
+  const { loadingRegion, loadRegion, region } = useRegion();
+  // const [region, setRegion] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [loadingRegion, setLoadingRegion] = useState(true);
+  // const [loadingRegion, setLoadingRegion] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [cityModalOpen, setCityModalOpen] = useState(false);
   const sliderRef = useRef(null);
 
   const checkScroll = useCallback(() => {
@@ -26,34 +29,7 @@ export default function ExplorePage() {
   }, []);
 
   useEffect(() => {
-    setLoadingRegion(true);
-    setRegion(null);
-    setMovies([]);
-
-    async function resolveRegion() {
-      try {
-        const cookie_region = getCookie('selected_region');
-        if (cookie_region.city_name == city_name) {
-          setRegion(cookie_region);
-          return;
-        }
-        const { data } = await get('/region/' + city_name);
-        if (data != null) {
-          setRegion(data);
-          setCookie('selected_region', data);
-          navigate(`/explore/home/${city_name}`);
-          return;
-        }
-        navigate(-1);
-      } catch (error) {
-        console.error(error);
-        navigate(-1);
-      } finally {
-        setLoadingRegion(false);
-      }
-    }
-
-    resolveRegion();
+    loadRegion(city_name);
   }, [city_name]);
 
   useEffect(() => {
@@ -63,7 +39,7 @@ export default function ExplorePage() {
 
     async function fetchMovies() {
       try {
-        const { data } = await get(`/movie/region/${region.id}`);
+        const { data } = await get(`/movie/region/${region?.id}`);
         setMovies(data);
       } catch (error) {
         console.error(error);
@@ -94,8 +70,13 @@ export default function ExplorePage() {
   };
 
   const changeCity = () => {
-    deleteCookie('selected_region');
-    navigate('/');
+    setCityModalOpen(true);
+  };
+
+  const handleCitySelect = (region) => {
+    setCookie('selected_region', region);
+    setCityModalOpen(false);
+    navigate(`/explore/home/${region.city_name}`);
   };
 
   if (loadingRegion) {
@@ -114,20 +95,24 @@ export default function ExplorePage() {
     <div className="max-w-6xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Movies in {region.city_name}</h1>
+          <h1 className="text-2xl font-bold">
+            Movies in {capitalize(region?.city_name)}
+          </h1>
         </div>
         <button
           onClick={changeCity}
           className="text-sm border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
-          Change city
+          {capitalize(region?.city_name)}
         </button>
       </div>
 
       {loadingMovies && <MovieSliderSkeleton />}
 
       {!loadingMovies && movies.length === 0 && (
-        <p className="text-gray-400">No movies found for {region.city_name}.</p>
+        <p className="text-gray-400">
+          No movies found for {capitalize(region?.city_name)}.
+        </p>
       )}
 
       {!loadingMovies && movies.length > 0 && (
@@ -161,9 +146,15 @@ export default function ExplorePage() {
                     containerClassName="w-full h-72"
                   />
                   <div className="p-3">
-                    <h3 className="font-semibold text-sm truncate">{m.title}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">&#9733; {m.rating}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">{m.genres}</p>
+                    <h3 className="font-semibold text-sm truncate">
+                      {m.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      &#9733; {m.rating}
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                      {m.genres}
+                    </p>
                   </div>
                 </Link>
               ))}

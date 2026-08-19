@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Download } from 'lucide-react';
 import { get } from '../api';
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import { BookingListSkeleton } from '../components/Skeleton';
 
 const STATUS_STYLES = {

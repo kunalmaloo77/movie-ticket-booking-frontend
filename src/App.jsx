@@ -20,47 +20,53 @@ import MyBookings from './pages/MyBookings';
 import Screens from './pages/admin/Screens';
 import AddEditSeatLayout from './pages/admin/AddEditSeatLayout';
 import MoviesPage from './pages/MoviesPage';
+import { RegionProvider } from './context/RegionContext';
 
 export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-      <AuthProvider>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/explore/home/:city_name" element={<ExplorePage />} />
-          <Route path="/explore/movies/:city_name" element={<MoviesPage />} />
-          <Route
-            path="/movies/:city_name/:movie_name/:movie_id"
-            element={<MovieDetails />}
-          />
-          <Route
-            path="/movies/:city_name/:movie_id/booking"
-            element={<BookingPage />}
-          />
-          <Route
-            path="/movies/:movie_id/:city_name/seat-selection/:show_id"
-            element={<SeatSelectionPage />}
-          />
-          <Route path="/my-bookings" element={<MyBookings />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<ProtectedRoute admin />}>
-            <Route index element={<Dashboard />} />
-            <Route path="regions" element={<Regions />} />
-            <Route path="cinemas" element={<Cinemas />} />
-            <Route path="movies" element={<Movies />} />
-            <Route path="shows" element={<Shows />} />
-            <Route path="screens" element={<Screens />} />
-            <Route
-              path="cinemas/:cinema_id/screens"
-              element={<AddEditSeatLayout />}
-            />
-          </Route>
-        </Routes>
-      </AuthProvider>
+        <RegionProvider>
+          <AuthProvider>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/explore/home/:city_name" element={<Home />} />
+              <Route
+                path="/explore/movies/:city_name"
+                element={<MoviesPage />}
+              />
+              <Route
+                path="/movies/:city_name/:movie_name/:movie_id"
+                element={<MovieDetails />}
+              />
+              <Route
+                path="/movies/:city_name/:movie_id/booking"
+                element={<BookingPage />}
+              />
+              <Route
+                path="/movies/:movie_id/:city_name/seat-selection/:show_id"
+                element={<SeatSelectionPage />}
+              />
+              <Route path="/my-bookings" element={<MyBookings />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedRoute admin />}>
+                <Route index element={<Dashboard />} />
+                <Route path="regions" element={<Regions />} />
+                <Route path="cinemas" element={<Cinemas />} />
+                <Route path="movies" element={<Movies />} />
+                <Route path="shows" element={<Shows />} />
+                <Route path="screens" element={<Screens />} />
+                <Route
+                  path="cinemas/:cinema_id/screens"
+                  element={<AddEditSeatLayout />}
+                />
+              </Route>
+            </Routes>
+          </AuthProvider>
+        </RegionProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

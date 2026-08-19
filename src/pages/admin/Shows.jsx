@@ -3,7 +3,7 @@ import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { del, get, post, put } from '../../api';
 import Button from '../../components/Button';
-import { useTheme } from '../../context/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
 import { showError, showSuccess } from '../../utils/swal_utils';
 import { debounce } from '../../utils/utils';

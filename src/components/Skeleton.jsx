@@ -1,12 +1,20 @@
 import { useState } from 'react';
 
-export function ImageWithSkeleton({ src, alt, className = '', containerClassName = '', skeletonClassName = '' }) {
+export function ImageWithSkeleton({
+  src,
+  alt,
+  className = '',
+  containerClassName = '',
+  skeletonClassName = '',
+}) {
   const [loaded, setLoaded] = useState(false);
 
   return (
     <div className={`relative overflow-hidden ${containerClassName}`}>
       {!loaded && (
-        <div className={`absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse ${skeletonClassName}`} />
+        <div
+          className={`absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse ${skeletonClassName}`}
+        />
       )}
       <img
         src={src}
@@ -21,12 +29,15 @@ export function ImageWithSkeleton({ src, alt, className = '', containerClassName
 
 export function CityGridSkeleton() {
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
       <div className="h-7 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2" />
       <div className="h-4 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-6" />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="border dark:border-gray-700 rounded-lg px-4 py-3 animate-pulse">
+          <div
+            key={i}
+            className="border dark:border-gray-700 rounded-lg px-4 py-3 animate-pulse"
+          >
             <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded mb-1.5" />
             <div className="h-3 w-10 bg-gray-100 dark:bg-gray-800 rounded" />
           </div>
@@ -205,7 +216,10 @@ export function SeatGridSkeleton() {
             <div className="w-5 h-5 bg-gray-200 dark:bg-gray-700 rounded shrink-0" />
             <div className="flex flex-wrap gap-2">
               {Array.from({ length: 8 }).map((_, j) => (
-                <div key={j} className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded" />
+                <div
+                  key={j}
+                  className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded"
+                />
               ))}
             </div>
           </div>
