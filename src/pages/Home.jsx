@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getCookie, setCookie } from '../utils/cookie';
-import { MapPin } from 'lucide-react';
+import { ChevronRight, MapPin } from 'lucide-react';
 import CitySelectorModal from '../components/CitySelectorModal';
 import { useRegion } from '../hooks/useRegion';
 import { get } from '../api';
