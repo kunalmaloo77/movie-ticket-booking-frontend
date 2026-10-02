@@ -49,7 +49,7 @@ export default function BookingPage() {
         }
         const params = new URLSearchParams();
         if (selectedDate) {
-          params.set('selectedDate', formatDateToMMDDYYYY(selectedDate));
+          params.set('selected_date', formatDateToMMDDYYYY(selectedDate));
         }
         if (movie_id) {
           params.set('movie_id', movie_id);
