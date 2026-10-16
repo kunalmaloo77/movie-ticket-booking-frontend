@@ -22,6 +22,28 @@ export const formatDateToDDMMYYYY = (d) => {
   return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
 };
 
+export const convertMinutes = (totalMinutes) => {
+  if (isNaN(totalMinutes) || totalMinutes < 0) {
+    return { hours: 0, minutes: 0, seconds: 0, formatted: "0h 0m 0s" };
+  }
+
+  const totalSeconds = Math.round(totalMinutes * 60);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return {
+    hours,
+    minutes,
+    seconds,
+    formatted: `${hours}h ${minutes}m ${seconds}s`
+  };
+}
+
+// Example usage:
+console.log(convertMinutes(125.5)); 
+// Output: { hours: 2, minutes: 5, seconds: 30, formatted: "2h 5m 30s" }
+
 export const capitalize = (str) => {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

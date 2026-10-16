@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { del, get, post, put } from '../../api';
 import Select from 'react-select';
 import { TMDB_IMAGE_BASE } from '../../utils/const';
-import { useTheme } from '../../context/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
 import Button from '../../components/Button';
 import { showSuccess, showError } from '../../utils/swal_utils';
@@ -391,7 +391,7 @@ export default function Movies() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
       <div>
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold">Movies</h1>

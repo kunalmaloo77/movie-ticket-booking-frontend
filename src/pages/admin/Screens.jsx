@@ -4,7 +4,7 @@ import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../context/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
 
 const Screens = () => {

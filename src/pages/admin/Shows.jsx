@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { del, get, post, put } from '../../api';
 import Button from '../../components/Button';
-import { useTheme } from '../../context/useTheme';
+import MovieScreenSelectors from '../../components/admin/MovieScreenSelectors';
+import { useShowScheduleSelectors } from '../../hooks/useShowScheduleSelectors';
+import { useTheme } from '../../hooks/useTheme';
 import { getSelectStyles } from '../../utils/selectStyles';
 import { showError, showSuccess } from '../../utils/swal_utils';
-import { debounce } from '../../utils/utils';
+import { convertMinutes, debounce } from '../../utils/utils';
 
 const EMPTY_FORM = {
   movie_id: '',
@@ -15,6 +19,19 @@ const EMPTY_FORM = {
   language_id: '',
   category_prices: [],
 };
+
+const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+const FILTER_REGION_STORAGE_KEY = 'admin_shows_filter_region';
+
+function loadStoredFilterRegion() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(FILTER_REGION_STORAGE_KEY));
+    return stored?.value && stored?.label ? stored : null;
+  } catch {
+    return null;
+  }
+}
 
 const inputClass =
   'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500';
@@ -28,16 +45,6 @@ function StatCard({ label, value }) {
       <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">
         {value}
       </p>
-    </div>
-  );
-}
-
-function ShowSkeleton() {
-  return (
-    <div className="animate-pulse rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-      <div className="h-5 w-48 rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="mt-3 h-4 w-36 rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="mt-4 h-4 w-56 rounded bg-gray-200 dark:bg-gray-700" />
     </div>
   );
 }
@@ -57,6 +64,18 @@ function formatShowDateTime(value) {
   }).format(date);
 }
 
+function formatShowTime(value) {
+  if (!value) return '';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-IN', {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
+}
+
 function toDateTimeLocalValue(value) {
   if (!value) return '';
 
@@ -65,6 +84,13 @@ function toDateTimeLocalValue(value) {
 
   const timezoneOffset = date.getTimezoneOffset() * 60 * 1000;
   return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
+}
+
+function dateKey(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
 function buildShowPayload(form) {
@@ -96,11 +122,9 @@ export default function Shows() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [shows, setShows] = useState([]);
   const [languages, setLanguages] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    totalPages: 1,
-    totalItems: 0,
+  const [visibleMonth, setVisibleMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   });
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
@@ -109,18 +133,29 @@ export default function Shows() {
   const [deleting, setDeleting] = useState(false);
   const [editingShow, setEditingShow] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [selectedDateKey, setSelectedDateKey] = useState(null);
 
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [selectedRegion, setSelectedRegion] = useState(null);
-  const [selectedCinema, setSelectedCinema] = useState(null);
-  const [selectedScreen, setSelectedScreen] = useState(null);
+  const selectors = useShowScheduleSelectors();
+  const {
+    selectedMovie,
+    setSelectedMovie,
+    selectedRegion,
+    selectedCinema,
+    selectedScreen,
+    cinemas,
+    screens,
+    categories,
+    cinemasLoading,
+    screensLoading,
+    debouncedFetchMovies,
+    debouncedFetchRegions,
+    fetchRegions,
+    fetchCinemas,
+    resetSelectors,
+    loadSelectorsForShow,
+  } = selectors;
 
-  const [cinemas, setCinemas] = useState([]);
-  const [screens, setScreens] = useState([]);
-  const [cinemasLoading, setCinemasLoading] = useState(false);
-  const [screensLoading, setScreensLoading] = useState(false);
-
-  const [filterRegion, setFilterRegion] = useState(null);
+  const [filterRegion, setFilterRegion] = useState(loadStoredFilterRegion);
   const [filterCinema, setFilterCinema] = useState(null);
   const [filterCinemas, setFilterCinemas] = useState([]);
   const [filterCinemasLoading, setFilterCinemasLoading] = useState(false);
@@ -143,10 +178,24 @@ export default function Shows() {
     }
   }, []);
 
-  const loadShows = useCallback(async (page = 1, query = '', filters = {}) => {
+  const loadShows = useCallback(async (month, query = '', filters = {}) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(page) });
+      const monthStart = new Date(month.getFullYear(), month.getMonth(), 1);
+      const monthEnd = new Date(
+        month.getFullYear(),
+        month.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+
+      const params = new URLSearchParams({
+        date_from: monthStart.toISOString(),
+        date_to: monthEnd.toISOString(),
+      });
       if (query) {
         params.set('search', query);
       }
@@ -157,13 +206,8 @@ export default function Shows() {
         params.set('cinema_id', String(filters.cinema_id));
       }
 
-      const { data, pagination: pageInfo } = await get(`/show?${params}`);
+      const { data } = await get(`/show?${params}`);
       setShows(Array.isArray(data) ? data : []);
-      setPagination({
-        page: pageInfo?.page ?? page,
-        totalPages: Math.max(pageInfo?.totalPages ?? 1, 1),
-        totalItems: pageInfo?.totalItems ?? data?.length ?? 0,
-      });
     } catch (err) {
       showError(err.message, 'Could not load shows');
     } finally {
@@ -176,6 +220,13 @@ export default function Shows() {
   }, [loadLanguages]);
 
   useEffect(() => {
+    if (filterRegion?.value) {
+      fetchCinemas(filterRegion.value, setFilterCinemas, setFilterCinemasLoading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       setSearch(searchInput.trim());
     }, 300);
@@ -184,195 +235,99 @@ export default function Shows() {
   }, [searchInput]);
 
   useEffect(() => {
-    loadShows(1, search, {
+    loadShows(visibleMonth, search, {
       region_id: filterRegion?.value,
       cinema_id: filterCinema?.value,
     });
-  }, [loadShows, search, filterRegion, filterCinema]);
-
-  const fetchRegions = useCallback(async (inputValue) => {
-    try {
-      const params = new URLSearchParams();
-      if (inputValue?.trim()) {
-        params.set('q', inputValue.trim());
-      }
-      const { data } = await get(
-        `/region${params.toString() ? `?${params}` : ''}`
-      );
-      return Array.isArray(data)
-        ? data.map((region) => ({
-            value: region.id,
-            label: region.city_name,
-          }))
-        : [];
-    } catch (err) {
-      console.error('Failed to fetch regions:', err);
-      return [];
-    }
-  }, []);
-
-  const fetchMovies = useCallback(async (inputValue) => {
-    try {
-      const params = new URLSearchParams();
-      if (inputValue?.trim()) {
-        params.set('q', inputValue.trim());
-      }
-      const { data } = await get(
-        `/movie${params.toString() ? `?${params}` : ''}`
-      );
-      return Array.isArray(data)
-        ? data.map((movie) => ({
-            value: movie.id,
-            label: movie.title,
-          }))
-        : [];
-    } catch (err) {
-      console.error('Failed to fetch movies:', err);
-      return [];
-    }
-  }, []);
+  }, [loadShows, visibleMonth, search, filterRegion, filterCinema]);
 
   const debouncedFetchFilterRegions = useMemo(
     () => debounce(fetchRegions, 300),
     [fetchRegions]
   );
 
-  const debouncedFetchSearchRegions = useMemo(
-    () => debounce(fetchRegions, 300),
-    [fetchRegions]
-  );
+  const showsByDate = useMemo(() => {
+    const map = new Map();
+    shows.forEach((show) => {
+      const key = dateKey(show.start_time);
+      if (!key) return;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(show);
+    });
+    map.forEach((dayShows) =>
+      dayShows.sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
+    );
+    return map;
+  }, [shows]);
 
-  const debouncedFetchMovies = useMemo(
-    () => debounce(fetchMovies, 300),
-    [fetchMovies]
-  );
+  const calendarCells = useMemo(() => {
+    const year = visibleMonth.getFullYear();
+    const month = visibleMonth.getMonth();
+    const firstOfMonth = new Date(year, month, 1);
+    const startOffset = firstOfMonth.getDay();
+    const gridStart = new Date(year, month, 1 - startOffset);
 
-  const fetchCinemas = useCallback(async (regionId, setter, loadingSetter) => {
-    if (!regionId) {
-      setter([]);
-      return;
-    }
-
-    loadingSetter(true);
-    try {
-      const { data } = await get(`/cinema?region_id=${regionId}`);
-      setter(
-        Array.isArray(data)
-          ? data.map((cinema) => ({
-              value: cinema.cinema_id,
-              label: cinema.cinema_name,
-            }))
-          : []
+    return Array.from({ length: 42 }, (_, index) => {
+      const cellDate = new Date(
+        gridStart.getFullYear(),
+        gridStart.getMonth(),
+        gridStart.getDate() + index
       );
-    } catch (err) {
-      setter([]);
-      showError(err.message, 'Could not load cinemas');
-    } finally {
-      loadingSetter(false);
-    }
-  }, []);
+      return {
+        date: cellDate,
+        key: dateKey(cellDate),
+        inCurrentMonth: cellDate.getMonth() === month,
+        isToday: dateKey(cellDate) === dateKey(new Date()),
+      };
+    });
+  }, [visibleMonth]);
 
-  const fetchScreens = useCallback(async (cinemaId) => {
-    if (!cinemaId) {
-      setScreens([]);
-      return;
-    }
-
-    setScreensLoading(true);
-    try {
-      const { data } = await get(`/screen/cinema/${cinemaId}`);
-      setScreens(
-        Array.isArray(data)
-          ? data.map((screen) => ({
-              value: screen.id,
-              label: screen.name,
-            }))
-          : []
-      );
-    } catch (err) {
-      setScreens([]);
-      showError(err.message, 'Could not load screens');
-    } finally {
-      setScreensLoading(false);
-    }
-  }, []);
-
-  const fetchCategories = useCallback(async (screenId) => {
-    if (!screenId) {
-      setCategories([]);
-      return;
-    }
-
-    try {
-      const { data } = await get(`/seats/categories/screen/${screenId}`);
-      setCategories(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setCategories([]);
-      showError(err.message, 'Could not load seat categories');
-    }
-  }, []);
+  const selectedDayShows = selectedDateKey
+    ? showsByDate.get(selectedDateKey) ?? []
+    : [];
+  const selectedDate = selectedDateKey
+    ? calendarCells.find((cell) => cell.key === selectedDateKey)?.date
+    : null;
 
   function resetForm() {
     setForm(EMPTY_FORM);
     setEditingShow(null);
-    setSelectedMovie(null);
-    setSelectedRegion(null);
-    setSelectedCinema(null);
-    setSelectedScreen(null);
-    setCinemas([]);
-    setScreens([]);
-    setCategories([]);
+    resetSelectors();
   }
 
   async function handleRegionChange(option) {
-    setSelectedRegion(option);
-    setSelectedCinema(null);
-    setSelectedScreen(null);
-    setCinemas([]);
-    setScreens([]);
-    setCategories([]);
     setForm((prev) => ({
       ...prev,
       screen_id: '',
       category_prices: [],
     }));
-
-    if (option?.value) {
-      await fetchCinemas(option.value, setCinemas, setCinemasLoading);
-    }
+    await selectors.handleRegionChange(option);
   }
 
   async function handleCinemaChange(option) {
-    setSelectedCinema(option);
-    setSelectedScreen(null);
-    setScreens([]);
-    setCategories([]);
     setForm((prev) => ({
       ...prev,
       screen_id: '',
       category_prices: [],
     }));
-
-    console.log(option, 'option cinema');
-
-    if (option?.value) {
-      await fetchScreens(option.value);
-    }
+    await selectors.handleCinemaChange(option);
   }
 
   async function handleScreenChange(option) {
-    setSelectedScreen(option);
     setForm((prev) => ({
       ...prev,
       screen_id: option?.value ?? '',
       category_prices: [],
     }));
+    await selectors.handleScreenChange(option);
+  }
 
-    if (option?.value) {
-      await fetchCategories(option.value);
-    } else {
-      setCategories([]);
-    }
+  function handleMovieChange(option) {
+    setSelectedMovie(option);
+    setForm((prev) => ({
+      ...prev,
+      movie_id: option?.value ? String(option.value) : '',
+    }));
   }
 
   function handleCategoryPriceChange(categoryId, value) {
@@ -397,32 +352,10 @@ export default function Shows() {
 
   async function handleEdit(show) {
     setDeleteTarget(null);
+    setSelectedDateKey(null);
     setEditingShow(show);
-    setSelectedMovie({
-      value: show.movie_id,
-      label: show.movie_title,
-    });
 
-    const nextRegion = {
-      value: show.region_id,
-      label: show.region_name,
-    };
-    const nextCinema = {
-      value: show.cinema_id,
-      label: show.cinema_name,
-    };
-    const nextScreen = {
-      value: show.screen_id,
-      label: show.screen_name,
-    };
-
-    setSelectedRegion(nextRegion);
-    setSelectedCinema(nextCinema);
-    setSelectedScreen(nextScreen);
-
-    await fetchCinemas(show.region_id, setCinemas, setCinemasLoading);
-    await fetchScreens(show.cinema_id);
-    await fetchCategories(show.screen_id);
+    await loadSelectorsForShow(show);
 
     setForm({
       movie_id: String(show.movie_id),
@@ -468,11 +401,15 @@ export default function Shows() {
         await post('/show', payload);
       }
 
-      const nextPage = editingShow ? pagination.page : 1;
       const action = editingShow ? 'updated' : 'created';
+      const showDate = new Date(payload.start_time);
+      const targetMonth = Number.isNaN(showDate.getTime())
+        ? visibleMonth
+        : new Date(showDate.getFullYear(), showDate.getMonth(), 1);
 
       resetForm();
-      await loadShows(nextPage, search, {
+      setVisibleMonth(targetMonth);
+      await loadShows(targetMonth, search, {
         region_id: filterRegion?.value,
         cinema_id: filterCinema?.value,
       });
@@ -505,12 +442,7 @@ export default function Shows() {
         resetForm();
       }
 
-      const nextPage =
-        shows.length === 1 && pagination.page > 1
-          ? pagination.page - 1
-          : pagination.page;
-
-      await loadShows(nextPage, search, {
+      await loadShows(visibleMonth, search, {
         region_id: filterRegion?.value,
         cinema_id: filterCinema?.value,
       });
@@ -528,6 +460,16 @@ export default function Shows() {
     setFilterCinema(null);
     setFilterCinemas([]);
 
+    try {
+      if (option?.value) {
+        localStorage.setItem(FILTER_REGION_STORAGE_KEY, JSON.stringify(option));
+      } else {
+        localStorage.removeItem(FILTER_REGION_STORAGE_KEY);
+      }
+    } catch {
+      // ignore storage errors (e.g. private browsing)
+    }
+
     if (option?.value) {
       await fetchCinemas(
         option.value,
@@ -537,8 +479,21 @@ export default function Shows() {
     }
   }
 
-  const totalShows = pagination.totalItems;
-  const visibleShows = shows.length;
+  function goToMonth(offset) {
+    setVisibleMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + offset, 1));
+  }
+
+  function goToToday() {
+    const now = new Date();
+    setVisibleMonth(new Date(now.getFullYear(), now.getMonth(), 1));
+  }
+
+  const monthLabel = new Intl.DateTimeFormat('en-IN', {
+    month: 'long',
+    year: 'numeric',
+  }).format(visibleMonth);
+
+  const totalShows = shows.length;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
@@ -557,9 +512,8 @@ export default function Shows() {
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-            <StatCard label="Shows" value={totalShows} />
-            <StatCard label="Visible" value={visibleShows} />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            <StatCard label={`Shows in ${monthLabel}`} value={totalShows} />
             <StatCard label="Mode" value={isEditing ? 'Edit' : 'Create'} />
           </div>
         </div>
@@ -588,74 +542,31 @@ export default function Shows() {
             before setting language and seat pricing.
           </p>
 
+          <Link
+            to="/admin/shows/bulk"
+            className="mt-3 inline-block text-sm font-medium text-red-600 hover:underline dark:text-red-400"
+          >
+            Bulk add shows for a date range →
+          </Link>
+
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Movie
-              </span>
-              <AsyncSelect
-                placeholder="Search movie"
-                defaultOptions
-                cacheOptions
-                loadOptions={debouncedFetchMovies}
-                value={selectedMovie}
-                onChange={(option) => {
-                  setSelectedMovie(option);
-                  setForm((prev) => ({
-                    ...prev,
-                    movie_id: option?.value ? String(option.value) : '',
-                  }));
-                }}
-                styles={selectStyles}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Region
-              </span>
-              <AsyncSelect
-                placeholder="Search region"
-                defaultOptions
-                cacheOptions
-                loadOptions={debouncedFetchSearchRegions}
-                value={selectedRegion}
-                onChange={handleRegionChange}
-                styles={selectStyles}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Cinema
-              </span>
-              <Select
-                placeholder={
-                  cinemasLoading ? 'Loading cinemas...' : 'Select cinema'
-                }
-                options={cinemas}
-                value={selectedCinema}
-                onChange={handleCinemaChange}
-                isDisabled={!selectedRegion || cinemasLoading}
-                styles={selectStyles}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Screen
-              </span>
-              <Select
-                placeholder={
-                  screensLoading ? 'Loading screens...' : 'Select screen'
-                }
-                options={screens}
-                value={selectedScreen}
-                onChange={handleScreenChange}
-                isDisabled={!selectedCinema || screensLoading}
-                styles={selectStyles}
-              />
-            </div>
+            <MovieScreenSelectors
+              selectStyles={selectStyles}
+              selectedMovie={selectedMovie}
+              onMovieChange={handleMovieChange}
+              debouncedFetchMovies={debouncedFetchMovies}
+              selectedRegion={selectedRegion}
+              onRegionChange={handleRegionChange}
+              debouncedFetchRegions={debouncedFetchRegions}
+              selectedCinema={selectedCinema}
+              onCinemaChange={handleCinemaChange}
+              cinemas={cinemas}
+              cinemasLoading={cinemasLoading}
+              selectedScreen={selectedScreen}
+              onScreenChange={handleScreenChange}
+              screens={screens}
+              screensLoading={screensLoading}
+            />
 
             <label className="block space-y-2">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -785,14 +696,14 @@ export default function Shows() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Show library
+                  Show calendar
                 </p>
                 <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
-                  Search, update, or retire shows
+                  Browse, edit, or retire shows by date
                 </h2>
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                  Filter by title, location, or screen to manage the active show
-                  schedule without leaving this page.
+                  Click a date to see every show scheduled that day and manage
+                  it from there.
                 </p>
               </div>
               <Button
@@ -800,14 +711,14 @@ export default function Shows() {
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  loadShows(pagination.page, search, {
+                  loadShows(visibleMonth, search, {
                     region_id: filterRegion?.value,
                     cinema_id: filterCinema?.value,
                   })
                 }
                 disabled={loading}
               >
-                Refresh list
+                Refresh
               </Button>
             </div>
 
@@ -856,88 +767,175 @@ export default function Shows() {
             </div>
           </div>
 
-          {deleteTarget && (
-            <div className="mt-5 rounded border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-4 text-sm text-red-900 dark:text-red-200">
-              <p className="font-medium">
-                Delete {deleteTarget.movie_title} at {deleteTarget.screen_name}?
-              </p>
-              <p className="mt-1 leading-6 text-red-800 dark:text-red-300">
-                This removes the show schedule and seat inventory. If active
-                bookings already exist, the delete request will be blocked.
-              </p>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  type="button"
-                  variant="outline"
-                  fullWidth
-                  onClick={() => setDeleteTarget(null)}
-                >
-                  Keep show
-                </Button>
-                <Button
-                  type="button"
-                  variant="danger"
-                  fullWidth
-                  loading={deleting}
-                  loadingText="Deleting…"
-                  onClick={confirmDelete}
-                >
-                  Delete show
-                </Button>
-              </div>
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => goToMonth(-1)}
+                className="rounded border border-gray-300 dark:border-gray-600 p-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                aria-label="Previous month"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => goToMonth(1)}
+                className="rounded border border-gray-300 dark:border-gray-600 p-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                aria-label="Next month"
+              >
+                <ChevronRight size={18} />
+              </button>
+              <h3 className="ml-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {monthLabel}
+              </h3>
             </div>
-          )}
+            <Button type="button" variant="outline" size="sm" onClick={goToToday}>
+              Today
+            </Button>
+          </div>
 
-          <div className="mt-6 space-y-4">
-            {loading ? (
-              <div className="space-y-4">
-                <ShowSkeleton />
-                <ShowSkeleton />
-                <ShowSkeleton />
+          <div className="mt-4 grid grid-cols-7 gap-px overflow-hidden rounded border border-gray-200 dark:border-gray-800 bg-gray-200 dark:bg-gray-800 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            {WEEKDAY_LABELS.map((day) => (
+              <div key={day} className="bg-gray-50 dark:bg-gray-900/60 py-2">
+                {day}
               </div>
-            ) : shows.length === 0 ? (
-              <div className="rounded border border-dashed border-gray-300 dark:border-gray-700 px-6 py-12 text-center">
-                <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  {search || filterRegion || filterCinema
-                    ? 'No shows matched your filters.'
-                    : 'No shows scheduled yet.'}
-                </p>
-                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
-                  {search || filterRegion || filterCinema
-                    ? 'Try a different search term or clear one of the filters to browse the full show library.'
-                    : 'Create your first show to publish a bookable schedule for a movie and screen.'}
-                </p>
-              </div>
-            ) : (
-              shows.map((show) => {
-                const active = editingShow?.id === show.id;
+            ))}
+          </div>
 
-                return (
-                  <article
-                    key={show.id}
-                    className={`rounded border p-4 transition sm:p-5 ${
-                      active
-                        ? 'border-red-300 dark:border-red-800 bg-red-50/60 dark:bg-red-950/20'
-                        : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40 hover:border-gray-300 dark:hover:border-gray-700'
+          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-b border-x border-b border-gray-200 dark:border-gray-800 bg-gray-200 dark:bg-gray-800">
+            {calendarCells.map((cell) => {
+              const dayShows = showsByDate.get(cell.key) ?? [];
+              const visibleDayShows = dayShows.slice(0, 3);
+              const extraCount = dayShows.length - visibleDayShows.length;
+
+              return (
+                <button
+                  key={cell.key}
+                  type="button"
+                  onClick={() => setSelectedDateKey(cell.key)}
+                  className={`flex min-h-[92px] flex-col items-stretch gap-1 p-1.5 text-left transition sm:min-h-[108px] ${
+                    cell.inCurrentMonth
+                      ? 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                      : 'bg-gray-50 dark:bg-gray-900/40 text-gray-400 dark:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800/40'
+                  }`}
+                >
+                  <span
+                    className={`self-start rounded-full px-1.5 text-xs font-medium ${
+                      cell.isToday
+                        ? 'bg-red-600 text-white'
+                        : cell.inCurrentMonth
+                          ? 'text-gray-700 dark:text-gray-300'
+                          : 'text-gray-400 dark:text-gray-600'
                     }`}
                   >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
+                    {cell.date.getDate()}
+                  </span>
+
+                  {loading ? (
+                    <span className="mt-1 h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                  ) : (
+                    <div className="flex flex-1 flex-col gap-1">
+                      {visibleDayShows.map((show) => (
+                        <span
+                          key={show.id}
+                          className={`truncate rounded px-1.5 py-0.5 text-[11px] font-medium ${
+                            editingShow?.id === show.id
+                              ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                              : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                          }`}
+                        >
+                          {formatShowTime(show.start_time)} · {show.movie_title}
+                        </span>
+                      ))}
+                      {extraCount > 0 && (
+                        <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                          +{extraCount} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+
+      {selectedDateKey && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/55 p-4 pt-10 sm:p-6">
+          <div className="w-full max-w-lg rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl">
+            <div className="flex items-start justify-between gap-4 border-b border-gray-200 dark:border-gray-800 px-5 py-4 sm:px-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Shows on
+                </p>
+                <h2 className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {selectedDate &&
+                    new Intl.DateTimeFormat('en-IN', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    }).format(selectedDate)}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDateKey(null);
+                  setDeleteTarget(null);
+                }}
+                className="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="max-h-[70vh] overflow-y-auto p-5 sm:p-6">
+              {selectedDayShows.length === 0 ? (
+                <div className="rounded border border-dashed border-gray-300 dark:border-gray-700 px-6 py-10 text-center">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    No shows scheduled on this date.
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Use the scheduler on the left to create one — the start
+                    time will default to this day.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {selectedDayShows.map((show) => {
+                    const active = editingShow?.id === show.id;
+                    const confirmingDelete = deleteTarget?.id === show.id;
+
+                    return (
+                      <article
+                        key={show.id}
+                        className={`rounded border p-4 transition ${
+                          active
+                            ? 'border-red-300 dark:border-red-800 bg-red-50/60 dark:bg-red-950/20'
+                            : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40'
+                        }`}
+                      >
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
                             {show.movie_title}
                           </h3>
-                          <span className="rounded bg-gray-900 dark:bg-gray-100 px-2.5 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-gray-900">
+                          <span className="rounded bg-gray-900 dark:bg-gray-100 px-2 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-gray-900">
                             {show.language_name}
                           </span>
+                          <span className="rounded bg-gray-900 dark:bg-gray-100 px-2 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-gray-900">
+                            {convertMinutes(show.movie_runtime).formatted}
+                          </span>
                           {active && (
-                            <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-medium text-red-700 dark:text-red-400">
+                            <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:text-red-400">
                               Editing now
                             </span>
                           )}
                         </div>
 
-                        <div className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="mt-2 space-y-1.5 text-sm text-gray-600 dark:text-gray-400">
                           <p>
                             {show.region_name} · {show.cinema_name} ·{' '}
                             {show.screen_name}
@@ -955,72 +953,65 @@ export default function Shows() {
                               : 'Pricing not configured'}
                           </p>
                         </div>
-                      </div>
 
-                      <div className="flex gap-2 sm:justify-end">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(show)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="danger"
-                          size="sm"
-                          onClick={() => setDeleteTarget(show)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })
-            )}
-          </div>
-
-          {pagination.totalPages > 1 && !loading && (
-            <div className="mt-6 flex flex-col gap-3 border-t border-gray-100 dark:border-gray-800 pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-gray-600 dark:text-gray-400">
-                Page {pagination.page} of {pagination.totalPages}
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={pagination.page <= 1}
-                  onClick={() =>
-                    loadShows(pagination.page - 1, search, {
-                      region_id: filterRegion?.value,
-                      cinema_id: filterCinema?.value,
-                    })
-                  }
-                >
-                  Previous
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() =>
-                    loadShows(pagination.page + 1, search, {
-                      region_id: filterRegion?.value,
-                      cinema_id: filterCinema?.value,
-                    })
-                  }
-                >
-                  Next
-                </Button>
-              </div>
+                        {confirmingDelete ? (
+                          <div className="mt-3 rounded border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-3 py-3 text-sm text-red-900 dark:text-red-200">
+                            <p className="leading-5">
+                              Delete this show and its seat inventory? Blocked
+                              if active bookings exist.
+                            </p>
+                            <div className="mt-3 flex gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                fullWidth
+                                onClick={() => setDeleteTarget(null)}
+                              >
+                                Keep show
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="danger"
+                                size="sm"
+                                fullWidth
+                                loading={deleting}
+                                loadingText="Deleting…"
+                                onClick={confirmDelete}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="mt-3 flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(show)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="danger"
+                              size="sm"
+                              onClick={() => setDeleteTarget(show)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
-        </section>
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
