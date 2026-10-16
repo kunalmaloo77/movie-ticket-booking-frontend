@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 import GlobalSearch from './GlobalSearch';
+import CitySelectorModal from './CitySelectorModal';
+import { setCookie } from '../utils/cookie';
+import { capitalize } from '../utils/utils';
 import {
   Sun,
   Moon,
@@ -15,6 +18,14 @@ import {
   LogIn,
   UserPlus,
   ChevronRight,
+  ChevronDown,
+  MapPin,
+  Building2,
+  Film,
+  Clapperboard,
+  ListPlus,
+  Columns3,
+  BarChart3,
 } from 'lucide-react';
 import { useRegion } from '../hooks/useRegion';
 
@@ -24,16 +35,34 @@ const THEMES = [
   { value: 'system', label: 'System', icon: <Monitor size={14} /> },
 ];
 
+const ADMIN_LINKS = [
+  { to: '/admin/analytics', label: 'Analytics', icon: <BarChart3 size={16} /> },
+  { to: '/admin/regions', label: 'Manage Regions', icon: <MapPin size={16} /> },
+  { to: '/admin/cinemas', label: 'Manage Cinemas', icon: <Building2 size={16} /> },
+  { to: '/admin/movies', label: 'Manage Movies', icon: <Film size={16} /> },
+  { to: '/admin/shows', label: 'Manage Shows', icon: <Clapperboard size={16} /> },
+  { to: '/admin/shows/bulk', label: 'Bulk Add Shows', icon: <ListPlus size={16} /> },
+  { to: '/admin/screens', label: 'Manage Screens', icon: <Columns3 size={16} /> },
+];
+
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { region } = useRegion();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [cityModalOpen, setCityModalOpen] = useState(false);
   const sidebarRef = useRef(null);
   const navigate = useNavigate();
 
   function closeSidebar() {
     setSidebarOpen(false);
+  }
+
+  function handleCitySelect(selectedRegion) {
+    setCookie('selected_region', selectedRegion);
+    setCityModalOpen(false);
+    navigate(`/explore/home/${selectedRegion.city_name}`);
   }
 
   function handleLogout() {
@@ -74,10 +103,24 @@ export default function Navbar() {
             <GlobalSearch />
           </div>
 
-          {/*City Change Button*/}
-          {/* <button onClick={handleChangeCity} className="px-4 py-2">
-            {region?.city_name}
-          </button> */}
+          {/* City Change Button */}
+          <button
+            onClick={() => setCityModalOpen(true)}
+            aria-label="Change city"
+            title={
+              region?.city_name
+                ? `Change city (${capitalize(region.city_name)})`
+                : 'Select city'
+            }
+            className="shrink-0 flex items-center gap-1.5 rounded-full bg-gray-800 hover:bg-gray-700 px-2.5 py-1.5 transition-colors"
+          >
+            <MapPin size={15} />
+            {region?.city_name && (
+              <span className="hidden sm:inline text-xs font-medium max-w-[90px] truncate">
+                {capitalize(region.city_name)}
+              </span>
+            )}
+          </button>
 
           {/* Avatar button */}
           <button
@@ -150,13 +193,42 @@ export default function Navbar() {
                 My Bookings
               </SidebarLink>
               {user.role === 'ADMIN' && (
-                <SidebarLink
-                  to="/admin"
-                  icon={<LayoutDashboard size={16} />}
-                  onClick={closeSidebar}
-                >
-                  Admin Dashboard
-                </SidebarLink>
+                <div>
+                  <button
+                    onClick={() => setAdminOpen((o) => !o)}
+                    aria-expanded={adminOpen}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors group"
+                  >
+                    <span className="text-gray-400 group-hover:text-white transition-colors">
+                      <LayoutDashboard size={16} />
+                    </span>
+                    <span className="flex-1 text-left">Admin Section</span>
+                    <ChevronDown
+                      size={14}
+                      className={`text-gray-500 transition-transform ${
+                        adminOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-200 ${
+                      adminOpen ? 'max-h-96' : 'max-h-0'
+                    }`}
+                  >
+                    <div className="flex flex-col gap-1 pl-3 pt-1 pb-1">
+                      {ADMIN_LINKS.map((l) => (
+                        <SidebarLink
+                          key={l.to}
+                          to={l.to}
+                          icon={l.icon}
+                          onClick={closeSidebar}
+                        >
+                          {l.label}
+                        </SidebarLink>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
             </>
           ) : (
@@ -214,6 +286,12 @@ export default function Navbar() {
           )}
         </div>
       </aside>
+
+      <CitySelectorModal
+        open={cityModalOpen}
+        onClose={() => setCityModalOpen(false)}
+        onSelect={handleCitySelect}
+      />
     </>
   );
 }

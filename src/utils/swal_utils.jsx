@@ -49,3 +49,35 @@ export function showError(message, title = 'Something went wrong') {
     })
   );
 }
+
+export function showBulkResultSummary(result, title = 'Bulk show creation finished') {
+  const { created_count, failed_count, total_requested, results } = result;
+  const failedItems = results.filter((item) => item.status === 'FAILED');
+
+  return MySwal.fire(
+    themed({
+      icon: failed_count === 0 ? 'success' : created_count === 0 ? 'error' : 'warning',
+      title: <i>{title}</i>,
+      html: (
+        <div className="text-left">
+          <p>
+            {created_count} of {total_requested} shows created.
+          </p>
+          {failedItems.length > 0 && (
+            <div className="mt-3 max-h-56 overflow-y-auto text-sm">
+              <p className="font-medium">Skipped shows:</p>
+              <ul className="mt-1 space-y-1">
+                {failedItems.map((item) => (
+                  <li key={item.start_time}>
+                    {item.start_time} — {item.error.code}: {item.error.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ),
+      confirmButtonText: 'OK',
+    })
+  );
+}
