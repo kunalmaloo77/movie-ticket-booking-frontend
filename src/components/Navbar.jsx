@@ -18,6 +18,7 @@ import {
   LogIn,
   UserPlus,
   ChevronRight,
+  Settings,
   MapPin,
 } from 'lucide-react';
 import { useRegion } from '../hooks/useRegion';
@@ -47,8 +48,8 @@ export default function Navbar() {
     navigate(`/explore/home/${selectedRegion.city_name}`);
   }
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     closeSidebar();
     navigate('/');
   }
@@ -174,6 +175,13 @@ export default function Navbar() {
                 onClick={closeSidebar}
               >
                 My Bookings
+              </SidebarLink>
+              <SidebarLink
+                to="/account"
+                icon={<Settings size={16} />}
+                onClick={closeSidebar}
+              >
+                Account settings
               </SidebarLink>
               {user.role === 'ADMIN' && (
                 <SidebarLink

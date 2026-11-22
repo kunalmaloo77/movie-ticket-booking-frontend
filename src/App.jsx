@@ -27,6 +27,7 @@ import AddEditSeatLayout from './pages/admin/AddEditSeatLayout';
 import MoviesPage from './pages/MoviesPage';
 import { RegionProvider } from './context/RegionContext';
 import NotFound from './pages/NotFound';
+import AccountSettings from './pages/AccountSettings';
 import AdminLayout from './components/admin/AdminLayout';
 
 // Login popup, opened from anywhere via useAuth().openLogin(from)
@@ -64,6 +65,9 @@ export default function App() {
                 element={<SeatSelectionPage />}
               />
               <Route path="/my-bookings" element={<MyBookings />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/account" element={<AccountSettings />} />
+              </Route>
               <Route path="/login" element={<Navigate to="/" replace />} />
               <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="/admin/login" element={<AdminLogin />} />
