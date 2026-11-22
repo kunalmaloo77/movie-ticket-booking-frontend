@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Clapperboard } from 'lucide-react';
 import { Spinner } from '../Button';
@@ -8,6 +8,8 @@ export const authInputClass =
 
 const pillBase =
   'w-full h-11 rounded-full inline-flex items-center justify-center gap-2.5 text-[15px] font-medium transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60';
+
+export const authLabelClass = 'block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5';
 
 // Provider buttons ("Continue with Google")
 export const outlinePillClass = `${pillBase} border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800`;
@@ -103,11 +105,13 @@ export function WhatsAppIcon({ size = 18 }) {
   );
 }
 
-const RESEND_SECONDS = 30;
+// Matches the server's 60 second resend cooldown
+const RESEND_SECONDS = 60;
 
 // Shared one-time-code step: code input, verify button and resend cooldown.
 // onVerify(code) and onResend() should throw an Error with a user-facing message.
-export function CodeForm({ destination, channel, onVerify, onResend, onBack, backLabel }) {
+export function CodeForm({ destination, channel, onVerify, onResend, onBack, backLabel, submitLabel = 'Verify and continue' }) {
+  const inputId = useId();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [verifying, setVerifying] = useState(false);
@@ -156,14 +160,19 @@ export function CodeForm({ destination, channel, onVerify, onResend, onBack, bac
         .
       </p>
       <FormError>{error}</FormError>
+      <label htmlFor={inputId} className={authLabelClass}>
+        6-digit code
+      </label>
       <input
+        id={inputId}
+        name="one-time-code"
         type="text"
         inputMode="numeric"
         autoComplete="one-time-code"
-        pattern="[0-9]*"
+        enterKeyHint="done"
+        pattern="[0-9]{6}"
         maxLength={6}
-        placeholder="Enter code"
-        aria-label="One-time code"
+        placeholder="123456"
         value={code}
         onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
         className={`${authInputClass} tracking-[0.3em] text-center font-medium`}
@@ -176,7 +185,7 @@ export function CodeForm({ destination, channel, onVerify, onResend, onBack, bac
           loading={verifying}
           disabled={code.length < 6}
         >
-          {verifying ? 'Verifying…' : 'Verify and continue'}
+          {verifying ? 'Verifying…' : submitLabel}
         </PillButton>
       </div>
       <div className="mt-4 flex items-center justify-between text-sm">
