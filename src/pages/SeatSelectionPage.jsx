@@ -23,7 +23,7 @@ function loadRazorpayScript() {
 export default function SeatSelectionPage() {
   const { city_name, movie_id, show_id } = useParams();
   const navigate = useNavigate();
-  const { openLogin } = useAuth();
+  const { user, openLogin } = useAuth();
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,8 +74,7 @@ export default function SeatSelectionPage() {
   };
 
   const confirmBooking = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!user) {
       // Log in over the seat map so the selection survives
       openLogin(`/movies/${movie_id}/${city_name}/seat-selection/${show_id}`);
       return;

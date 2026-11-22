@@ -164,13 +164,14 @@ function downloadReceipt(booking) {
 }
 
 export default function MyBookings() {
-  const { user, openLogin } = useAuth();
+  const { user, loading: authLoading, openLogin } = useAuth();
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) {
       openLogin('/my-bookings');
       return;
@@ -187,7 +188,9 @@ export default function MyBookings() {
       }
     };
     fetchBookings();
-  }, [user, openLogin]);
+  }, [user, authLoading, openLogin]);
+
+  if (authLoading) return null;
 
   if (!user) {
     return (
