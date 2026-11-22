@@ -15,7 +15,7 @@ import { getSelectStyles } from '../../utils/selectStyles';
 import { showBulkResultSummary, showError } from '../../utils/swal_utils';
 
 const inputClass =
-  'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500';
+  'w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500';
 
 const WEEKDAY_OPTIONS = [
   { day: 1, label: 'Mon' },
@@ -219,29 +219,29 @@ export default function BulkAddShows() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6 lg:p-8">
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-6 sm:px-8">
-        <p className="text-xs font-semibold uppercase tracking-wide text-red-600 dark:text-red-400">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-6 sm:px-8">
+        <p className="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
           Admin · Shows
         </p>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">
+        <h1 className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
           Bulk add shows
         </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
           Pick a movie and screen, describe a date range and daily showtimes, and
           create every show in one go. Conflicting slots are skipped, not blocking
           the rest of the batch.
         </p>
         <Link
           to="/admin/shows"
-          className="mt-3 inline-block text-sm font-medium text-red-600 hover:underline dark:text-red-400"
+          className="mt-3 inline-block text-sm font-medium text-brand-600 hover:underline dark:text-brand-400"
         >
           ← Back to show list
         </Link>
       </section>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             Movie & screen
           </h2>
           <MovieScreenSelectors
@@ -263,7 +263,7 @@ export default function BulkAddShows() {
           />
 
           <div className="space-y-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Language
             </span>
             <Select
@@ -276,25 +276,25 @@ export default function BulkAddShows() {
           </div>
 
           {categories.length > 0 && (
-            <div className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4">
-              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            <div className="rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 p-4">
+              <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
                 Seat category pricing
               </p>
               <div className="mt-3 space-y-3">
                 {categories.map((category) => (
                   <div key={category.id} className="flex items-center gap-3">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
                         {category.name}
                       </p>
                       {category.description && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400">
                           {category.description}
                         </p>
                       )}
                     </div>
                     <div className="relative w-32 shrink-0">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-gray-500">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 dark:text-zinc-500">
                         ₹
                       </span>
                       <input
@@ -310,7 +310,7 @@ export default function BulkAddShows() {
                         onChange={(event) =>
                           handleCategoryPriceChange(category.id, event.target.value)
                         }
-                        className="w-full rounded border border-gray-300 bg-white py-2 pl-7 pr-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-gray-600"
+                        className="w-full rounded border border-zinc-300 bg-white py-2 pl-7 pr-3 text-sm outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:ring-zinc-600"
                         required
                       />
                     </div>
@@ -321,13 +321,13 @@ export default function BulkAddShows() {
           )}
         </section>
 
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             Date range & days of week
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Start date
               </span>
               <input
@@ -338,7 +338,7 @@ export default function BulkAddShows() {
               />
             </label>
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 End date
               </span>
               <input
@@ -351,14 +351,14 @@ export default function BulkAddShows() {
           </div>
 
           <div className="space-y-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Days of week
             </span>
             <div className="flex flex-wrap gap-3">
               {WEEKDAY_OPTIONS.map(({ day, label }) => (
                 <label
                   key={day}
-                  className="flex items-center gap-2 rounded border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300"
+                  className="flex items-center gap-2 rounded border border-zinc-300 dark:border-zinc-600 px-3 py-1.5 text-sm text-zinc-700 dark:text-zinc-300"
                 >
                   <input
                     type="checkbox"
@@ -372,11 +372,11 @@ export default function BulkAddShows() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             Showtimes
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
             These times apply to every selected date.
           </p>
           <div className="space-y-3">
@@ -406,9 +406,9 @@ export default function BulkAddShows() {
           </Button>
         </section>
 
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 space-y-4">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               Preview
             </h2>
             <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-sm font-medium text-red-700 dark:text-red-400">
@@ -417,7 +417,7 @@ export default function BulkAddShows() {
           </div>
 
           {allDates.length === 0 ? (
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
               No dates match the selected range and days of week.
             </p>
           ) : (
@@ -427,7 +427,7 @@ export default function BulkAddShows() {
                 return (
                   <label
                     key={date}
-                    className="flex items-start gap-3 rounded border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm"
+                    className="flex items-start gap-3 rounded border border-zinc-200 dark:border-zinc-700 px-3 py-2 text-sm"
                   >
                     <input
                       type="checkbox"
@@ -436,10 +436,10 @@ export default function BulkAddShows() {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-medium text-gray-800 dark:text-gray-200">
+                      <p className="font-medium text-zinc-800 dark:text-zinc-200">
                         {formatDateLabel(date)}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
                         {validTimeSlots.length > 0
                           ? validTimeSlots.join(', ')
                           : 'No time slots added yet'}

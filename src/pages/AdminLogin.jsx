@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import PasswordInput from '../components/PasswordInput';
 
-const inputClass =
-  'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 mb-4 bg-white dark:bg-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600';
+const baseInputClass =
+  'w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20';
+const inputClass = `${baseInputClass} mb-4`;
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -28,10 +30,10 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
       <form
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-8 rounded-lg shadow-md w-full max-w-sm"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-8 rounded-lg shadow-md w-full max-w-sm"
       >
         <h2 className="text-xl font-bold mb-6 text-center">Admin Login</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -43,18 +45,18 @@ export default function AdminLogin() {
           className={inputClass}
           required
         />
-        <input
-          type="password"
+        <PasswordInput
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className={inputClass}
+          className={baseInputClass}
+          autoComplete="current-password"
           required
         />
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-brand-600 text-white py-2 rounded hover:bg-brand-700 font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading && (
             <svg

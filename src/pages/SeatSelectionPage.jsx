@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get, post } from '../api';
+import { useAuth } from '../hooks/useAuth';
 import { SeatGridSkeleton } from '../components/Skeleton.jsx';
 import { formatDateTime } from '../utils/utils.js';
+import { BRAND_HEX } from '../utils/theme';
 
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -21,6 +23,7 @@ function loadRazorpayScript() {
 export default function SeatSelectionPage() {
   const { city_name, movie_id, show_id } = useParams();
   const navigate = useNavigate();
+  const { openLogin } = useAuth();
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,23 +64,20 @@ export default function SeatSelectionPage() {
 
   const getSeatStyle = (seat) => {
     if (seat.status !== 'available') {
-      return 'bg-gray-300 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed border-gray-300 dark:border-gray-600';
+      return 'bg-zinc-300 dark:bg-zinc-600 text-zinc-400 dark:text-zinc-500 cursor-not-allowed border-zinc-300 dark:border-zinc-600';
     }
     const isSelected = selectedSeats.find((s) => s.id === seat.id);
     if (isSelected) {
-      return 'bg-red-600 text-white border-red-600 cursor-pointer';
+      return 'bg-brand-600 text-white border-brand-600 cursor-pointer';
     }
-    return 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950 cursor-pointer';
+    return 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-400 dark:border-zinc-500 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-brand-950 cursor-pointer';
   };
 
   const confirmBooking = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login', {
-        state: {
-          from: `/movies/${movie_id}/${city_name}/seat-selection/${show_id}`,
-        },
-      });
+      // Log in over the seat map so the selection survives
+      openLogin(`/movies/${movie_id}/${city_name}/seat-selection/${show_id}`);
       return;
     }
     if (selectedSeats.length === 0) return;
@@ -118,7 +118,7 @@ export default function SeatSelectionPage() {
             setBooking(false);
           }
         },
-        theme: { color: '#dc2626' },
+        theme: { color: BRAND_HEX },
         modal: {
           ondismiss: () => setBooking(false),
         },
@@ -142,13 +142,13 @@ export default function SeatSelectionPage() {
       <div className="max-w-2xl mx-auto p-6 text-center mt-16">
         <div className="text-green-500 text-5xl mb-4">&#10003;</div>
         <h2 className="text-2xl font-bold mb-2">Booking Confirmed!</h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-1">
+        <p className="text-zinc-500 dark:text-zinc-400 mb-1">
           {showDetails.cinema_name}
         </p>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">
+        <p className="text-zinc-500 dark:text-zinc-400 mb-6">
           Show: {formatDateTime(showDetails.start_time)}
         </p>
-        <p className="text-gray-700 dark:text-gray-300 mb-8">
+        <p className="text-zinc-700 dark:text-zinc-300 mb-8">
           Seats:{' '}
           <span className="font-medium">
             {selectedSeats.map((s) => s.column_label).join(', ')}
@@ -156,7 +156,7 @@ export default function SeatSelectionPage() {
         </p>
         <button
           onClick={() => navigate(`/explore/home/${city_name}`)}
-          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+          className="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors"
         >
           Back to Movies
         </button>
@@ -168,14 +168,14 @@ export default function SeatSelectionPage() {
     <div className="max-w-2xl mx-auto p-6">
       <button
         onClick={() => navigate(-1)}
-        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 mb-6 inline-flex items-center gap-1"
+        className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 mb-6 inline-flex items-center gap-1"
       >
         &larr; Back
       </button>
 
       <div className="mb-6">
         <h1 className="text-2xl font-bold">{showDetails?.cinema_name}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
           Show: {formatDateTime(showDetails?.start_time)}
         </p>
       </div>
@@ -186,17 +186,17 @@ export default function SeatSelectionPage() {
         <p className="text-red-500 text-center py-16">{error}</p>
       ) : (
         <>
-          <div className="flex items-center justify-center gap-6 mb-6 text-xs text-gray-600 dark:text-gray-400">
+          <div className="flex items-center justify-center gap-6 mb-6 text-xs text-zinc-600 dark:text-zinc-400">
             <span className="flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded border border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 inline-block" />
+              <span className="w-4 h-4 rounded border border-zinc-400 dark:border-zinc-500 bg-white dark:bg-zinc-800 inline-block" />
               Available
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded border border-red-600 bg-red-600 inline-block" />
+              <span className="w-4 h-4 rounded border border-brand-600 bg-brand-600 inline-block" />
               Selected
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded border border-gray-300 dark:border-gray-600 bg-gray-300 dark:bg-gray-600 inline-block" />
+              <span className="w-4 h-4 rounded border border-zinc-300 dark:border-zinc-600 bg-zinc-300 dark:bg-zinc-600 inline-block" />
               Booked
             </span>
           </div>
@@ -204,7 +204,7 @@ export default function SeatSelectionPage() {
           <div className="flex flex-col gap-3">
             {rows.map((rowData) => (
               <div key={rowData.row} className="flex items-center gap-3">
-                <span className="w-5 text-center text-sm font-semibold text-gray-500 dark:text-gray-400 shrink-0">
+                <span className="w-5 text-center text-sm font-semibold text-zinc-500 dark:text-zinc-400 shrink-0">
                   {rowData.row}
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -225,23 +225,23 @@ export default function SeatSelectionPage() {
           </div>
 
           <div className="mt-8">
-            <div className="h-2 bg-linear-to-t from-gray-300 dark:from-gray-600 to-transparent rounded-b-full mx-auto w-3/4" />
-            <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-widest">
+            <div className="h-2 bg-linear-to-t from-zinc-300 dark:from-zinc-600 to-transparent rounded-b-full mx-auto w-3/4" />
+            <p className="text-center text-xs text-zinc-400 dark:text-zinc-500 mt-1 uppercase tracking-widest">
               Screen
             </p>
           </div>
         </>
       )}
 
-      <div className="sticky bottom-0 mt-8 bg-white dark:bg-gray-950 border-t dark:border-gray-700 pt-4 pb-2">
+      <div className="sticky bottom-0 mt-8 bg-white dark:bg-zinc-950 border-t dark:border-zinc-700 pt-4 pb-2">
         {selectedSeats.length > 0 ? (
           <div className="flex items-center justify-between gap-4">
-            <div className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-sm text-zinc-700 dark:text-zinc-300">
               <p className="font-medium">
                 {selectedSeats.length} seat{selectedSeats.length > 1 ? 's' : ''}{' '}
                 selected
               </p>
-              <p className="text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-zinc-500 dark:text-zinc-400 mt-0.5">
                 {selectedSeats
                   .map(
                     (s) => s.row_label.toString() + s.column_label.toString()
@@ -254,14 +254,14 @@ export default function SeatSelectionPage() {
               <button
                 onClick={confirmBooking}
                 disabled={booking}
-                className="px-5 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
+                className="px-5 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
               >
                 {booking ? 'Processing...' : 'Proceed to Pay'}
               </button>
             </div>
           </div>
         ) : (
-          <p className="text-sm text-gray-400 dark:text-gray-500 text-center">
+          <p className="text-sm text-zinc-400 dark:text-zinc-500 text-center">
             Select seats to continue
           </p>
         )}

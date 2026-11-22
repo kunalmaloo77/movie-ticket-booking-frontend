@@ -16,7 +16,7 @@ export async function post(path, body) {
   });
   const data = await res.json();
   if (!res.ok) {
-    if (res.status === 401)
+    if (res.status === 401 && !path.startsWith('/auth/'))
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     throw new Error(data.message || data.error.message || 'Request failed');
   }
@@ -30,7 +30,7 @@ export async function get(path) {
   });
   const data = await res.json();
   if (!res.ok) {
-    if (res.status === 401)
+    if (res.status === 401 && !path.startsWith('/auth/'))
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     throw new Error(data.message || data.error.message || 'Request failed');
   }
@@ -46,7 +46,7 @@ export async function put(path, body) {
   });
   const data = await res.json();
   if (!res.ok) {
-    if (res.status === 401)
+    if (res.status === 401 && !path.startsWith('/auth/'))
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     throw new Error(data.message || data.error.message || 'Request failed');
   }
@@ -62,7 +62,7 @@ export async function patch(path, body) {
   });
   const data = await res.json();
   if (!res.ok) {
-    if (res.status === 401)
+    if (res.status === 401 && !path.startsWith('/auth/'))
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     throw new Error(data.message || data.error.message || 'Request failed');
   }
@@ -77,7 +77,7 @@ export async function del(path) {
   });
   const data = await res.json();
   if (!res.ok) {
-    if (res.status === 401)
+    if (res.status === 401 && !path.startsWith('/auth/'))
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     throw new Error(data.message || data.error.message || 'Request failed');
   }

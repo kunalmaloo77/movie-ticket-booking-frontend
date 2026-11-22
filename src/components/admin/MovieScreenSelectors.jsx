@@ -21,7 +21,7 @@ export default function MovieScreenSelectors({
   return (
     <>
       <div className="space-y-2">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Movie
         </span>
         <AsyncSelect
@@ -36,7 +36,7 @@ export default function MovieScreenSelectors({
       </div>
 
       <div className="space-y-2">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Region
         </span>
         <AsyncSelect
@@ -51,7 +51,7 @@ export default function MovieScreenSelectors({
       </div>
 
       <div className="space-y-2">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Cinema
         </span>
         <Select
@@ -65,7 +65,7 @@ export default function MovieScreenSelectors({
       </div>
 
       <div className="space-y-2">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Screen
         </span>
         <Select

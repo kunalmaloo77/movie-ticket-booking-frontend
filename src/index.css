@@ -1,21 +1,38 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Brand palette. Neutrals use Tailwind's built-in `zinc`.
+ *  - brand (crimson): primary actions only — Book, selected seat/date, active nav.
+ *    Use brand-600 behind white text (4.7:1 contrast) in both themes.
+ *  - gold (amber): ratings and highlights.
+ *  - Errors and destructive actions stay on Tailwind `red`, never brand.
+ * Keep in sync with BRAND_HEX in src/utils/theme.js.
+ */
+@theme {
+  --color-brand-50: #fff1f2;
+  --color-brand-100: #ffe4e6;
+  --color-brand-200: #fecdd3;
+  --color-brand-300: #fda4af;
+  --color-brand-400: #fb7185;
+  --color-brand-500: #f43f5e;
+  --color-brand-600: #e11d48;
+  --color-brand-700: #be123c;
+  --color-brand-800: #9f1239;
+  --color-brand-900: #881337;
+  --color-brand-950: #4c0519;
+
+  --color-gold-300: #fcd34d;
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+}
+
 @layer base {
   html {
-    @apply bg-white text-gray-900;
+    @apply bg-white text-zinc-900;
   }
   html.dark {
-    @apply bg-gray-950 text-gray-100;
+    @apply bg-zinc-950 text-zinc-100;
   }
-}
-
-.swal-confirm-btn-light {
-  background: #111827 !important;
-  color: #111827 !important;
-}
-
-.swal-confirm-btn-dark {
-  background: #f9fafb !important;
-  color: #111827 !important;
 }

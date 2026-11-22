@@ -89,18 +89,18 @@ export default function Home() {
       {loadingMovies && <MovieSliderSkeleton />}
 
       {!loadingMovies && movies.length === 0 && (
-        <p className="text-gray-400">
+        <p className="text-zinc-400">
           No movies found for {capitalize(region?.city_name)}.
         </p>
       )}
 
-      {movies.length > 0 && (
+      {!loadingMovies && movies.length > 0 && (
         <div>
           <div className="relative">
             {canScrollLeft && (
               <button
                 onClick={() => scroll(-1)}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full w-9 h-9 flex items-center justify-center shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-600 rounded-full w-9 h-9 flex items-center justify-center shadow hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
                 aria-label="Scroll left"
               >
                 <ChevronLeft size={18} />
@@ -116,7 +116,7 @@ export default function Home() {
                 <Link
                   to={`/movies/${region?.city_name}/${toSlug(m.title)}/${m.id}`}
                   key={m.id}
-                  className="flex-shrink-0 w-52 border border-gray-200 dark:border-gray-700 rounded overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
+                  className="flex-shrink-0 w-52 border border-zinc-200 dark:border-zinc-700 rounded overflow-hidden bg-white dark:bg-zinc-800 shadow-sm hover:shadow-md transition-shadow"
                 >
                   <ImageWithSkeleton
                     src={`https://image.tmdb.org/t/p/original${m.poster_image_url}`}
@@ -128,10 +128,10 @@ export default function Home() {
                     <h3 className="font-semibold text-sm truncate">
                       {m.title}
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                       &#9733; {m.rating}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                    <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5 truncate">
                       {m.genres}
                     </p>
                   </div>
@@ -142,7 +142,7 @@ export default function Home() {
             {canScrollRight && (
               <button
                 onClick={() => scroll(1)}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full w-9 h-9 flex items-center justify-center shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-600 rounded-full w-9 h-9 flex items-center justify-center shadow hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
                 aria-label="Scroll right"
               >
                 <ChevronRight size={18} />
@@ -153,7 +153,7 @@ export default function Home() {
           <div className="mt-6 text-center">
             <Link
               to={`/explore/movies/${region?.city_name}`}
-              className="inline-block border border-gray-300 dark:border-gray-600 rounded-lg px-6 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="inline-block border border-zinc-300 dark:border-zinc-600 rounded-lg px-6 py-2 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
             >
               See more movies &rarr;
             </Link>

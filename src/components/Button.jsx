@@ -12,11 +12,12 @@ const base =
   'inline-flex items-center justify-center gap-2 rounded font-medium transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60';
 
 const variants = {
-  primary:
-    'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200',
+  primary: 'bg-brand-600 text-white hover:bg-brand-700',
   outline:
-    'border border-gray-400 dark:border-gray-500 text-gray-600 dark:text-gray-400 hover:border-gray-800 dark:hover:border-gray-300',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
+    'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-500 hover:bg-zinc-50 dark:hover:border-zinc-400 dark:hover:bg-zinc-800',
+  // Outlined so destructive actions never look like the crimson primary button.
+  danger:
+    'border border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/40',
 };
 
 const sizes = {

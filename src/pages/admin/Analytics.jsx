@@ -12,18 +12,19 @@ import {
 } from 'recharts';
 import { get } from '../../api';
 import Button from '../../components/Button';
+import { BRAND_HEX } from '../../utils/theme';
 import { showError } from '../../utils/swal_utils.jsx';
 
 const DAY_OPTIONS = [7, 14, 30, 90];
-const ACCENT = '#6366f1';
+const ACCENT = BRAND_HEX;
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3">
-      <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+    <div className="rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-3">
+      <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
-      <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+      <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
         {value}
       </p>
     </div>
@@ -32,14 +33,14 @@ function StatCard({ label, value }) {
 
 function ChartSkeleton() {
   return (
-    <div className="animate-pulse rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 h-72" />
+    <div className="animate-pulse rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 h-72" />
   );
 }
 
 function EmptyState({ message }) {
   return (
-    <div className="rounded border border-dashed border-gray-300 dark:border-gray-700 px-6 py-12 text-center">
-      <p className="text-sm text-gray-600 dark:text-gray-400">{message}</p>
+    <div className="rounded border border-dashed border-zinc-300 dark:border-zinc-700 px-6 py-12 text-center">
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">{message}</p>
     </div>
   );
 }
@@ -144,16 +145,16 @@ export default function Analytics() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-6 sm:px-8">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-6 sm:px-8">
         <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr] lg:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-600 dark:text-red-400">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
               Admin · Analytics
             </p>
-            <h1 className="mt-2 max-w-2xl text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">
+            <h1 className="mt-2 max-w-2xl text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
               Revenue & booking insights
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
               Net revenue, city-wise breakdown, the most-booked movies, and
               daily booking volume at a glance.
             </p>
@@ -176,13 +177,13 @@ export default function Analytics() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6">
-        <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               Revenue by city
             </p>
-            <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
               City-wise revenue
             </h2>
           </div>
@@ -205,15 +206,15 @@ export default function Analytics() {
           ) : (
             <ResponsiveContainer width="100%" height={288}>
               <BarChart data={revenue}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-700" />
                 <XAxis
                   dataKey="city_name"
                   tick={{ fill: 'currentColor' }}
-                  className="text-xs text-gray-600 dark:text-gray-400"
+                  className="text-xs text-zinc-600 dark:text-zinc-400"
                 />
                 <YAxis
                   tick={{ fill: 'currentColor' }}
-                  className="text-xs text-gray-600 dark:text-gray-400"
+                  className="text-xs text-zinc-600 dark:text-zinc-400"
                 />
                 <Tooltip formatter={(value) => formatCurrency(value)} />
                 <Bar
@@ -228,12 +229,12 @@ export default function Analytics() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6">
-        <div className="border-b border-gray-100 dark:border-gray-800 pb-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6">
+        <div className="border-b border-zinc-100 dark:border-zinc-800 pb-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
             Top movies
           </p>
-          <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+          <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
             Top 5 most-booked movies
           </h2>
         </div>
@@ -246,19 +247,19 @@ export default function Analytics() {
           ) : (
             <ResponsiveContainer width="100%" height={288}>
               <BarChart data={topMovies} layout="vertical" margin={{ left: 80 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-700" />
                 <XAxis
                   type="number"
                   allowDecimals={false}
                   tick={{ fill: 'currentColor' }}
-                  className="text-xs text-gray-600 dark:text-gray-400"
+                  className="text-xs text-zinc-600 dark:text-zinc-400"
                 />
                 <YAxis
                   type="category"
                   dataKey="title"
                   width={160}
                   tick={{ fill: 'currentColor' }}
-                  className="text-xs text-gray-600 dark:text-gray-400"
+                  className="text-xs text-zinc-600 dark:text-zinc-400"
                 />
                 <Tooltip />
                 <Bar
@@ -273,22 +274,22 @@ export default function Analytics() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6">
-        <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               Booking volume
             </p>
-            <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
               Bookings per day
             </h2>
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+          <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
             Range
             <select
               value={days}
               onChange={(e) => setDays(Number(e.target.value))}
-              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1 text-sm dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              className="rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-2 py-1 text-sm dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600"
             >
               {DAY_OPTIONS.map((option) => (
                 <option key={option} value={option}>
@@ -307,17 +308,17 @@ export default function Analytics() {
           ) : (
             <ResponsiveContainer width="100%" height={288}>
               <LineChart data={dailyStats}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-700" />
                 <XAxis
                   dataKey="booking_date"
                   tickFormatter={formatDay}
                   tick={{ fill: 'currentColor' }}
-                  className="text-xs text-gray-600 dark:text-gray-400"
+                  className="text-xs text-zinc-600 dark:text-zinc-400"
                 />
                 <YAxis
                   allowDecimals={false}
                   tick={{ fill: 'currentColor' }}
-                  className="text-xs text-gray-600 dark:text-gray-400"
+                  className="text-xs text-zinc-600 dark:text-zinc-400"
                 />
                 <Tooltip
                   labelFormatter={(value) =>

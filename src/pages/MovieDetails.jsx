@@ -69,7 +69,7 @@ export default function MovieDetails() {
             containerClassName="w-full h-full"
           />
         ) : (
-          <div className="w-full h-full bg-gray-800" />
+          <div className="w-full h-full bg-zinc-800" />
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-black/30" />
 
@@ -100,7 +100,7 @@ export default function MovieDetails() {
 
             <div className="flex items-center gap-2 flex-wrap mb-5">
               {movie.rating && (
-                <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">
+                <span className="bg-gold-400 text-zinc-900 text-xs font-bold px-2 py-0.5 rounded">
                   &#9733; {movie.rating}
                 </span>
               )}
@@ -110,7 +110,7 @@ export default function MovieDetails() {
                 </span>
               )}
               {movie.genres && (
-                <span className="text-sm text-gray-500">{movie.genres}</span>
+                <span className="text-sm text-zinc-500">{movie.genres}</span>
               )}
             </div>
 
@@ -120,8 +120,8 @@ export default function MovieDetails() {
               }
               disabled={!movie.has_shows}
               className={`px-7 py-2.5 font-semibold rounded-lg text-sm transition-all mb-6 ${movie.has_shows
-                ? 'bg-red-600 hover:bg-red-700 active:scale-95 text-white cursor-pointer'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-brand-600 hover:bg-brand-700 active:scale-95 text-white cursor-pointer'
+                : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
                 }`}
             >
               Book Tickets
@@ -129,7 +129,7 @@ export default function MovieDetails() {
 
             {/* Overview */}
             {movie.overview && (
-              <p className="text-gray-500 text-sm leading-relaxed">
+              <p className="text-zinc-500 text-sm leading-relaxed">
                 {movie.overview}
               </p>
             )}
@@ -140,28 +140,28 @@ export default function MovieDetails() {
         <div className="mt-8 border-t pt-6 grid grid-cols-2 sm:grid-cols-3 gap-5 text-sm">
           {movie.genres && (
             <div>
-              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">
+              <span className="block text-xs text-zinc-400 uppercase tracking-wide mb-1">
                 Genre
               </span>
-              <span className="font-medium text-gray-800">{movie.genres}</span>
+              <span className="font-medium text-zinc-800">{movie.genres}</span>
             </div>
           )}
           {movie.rating && (
             <div>
-              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">
+              <span className="block text-xs text-zinc-400 uppercase tracking-wide mb-1">
                 Rating
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-zinc-800">
                 {movie.rating} / 10
               </span>
             </div>
           )}
           {movie.adult !== undefined && (
             <div>
-              <span className="block text-xs text-gray-400 uppercase tracking-wide mb-1">
+              <span className="block text-xs text-zinc-400 uppercase tracking-wide mb-1">
                 Adult
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-zinc-800">
                 {movie.adult ? 'Yes' : 'No'}
               </span>
             </div>

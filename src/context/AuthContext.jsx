@@ -1,10 +1,7 @@
-import { createContext, useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../api';
-
-const AuthContext = createContext();
-
-export default AuthContext;
+import AuthContext from './authContextObject';
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
@@ -14,26 +11,38 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : null;
   });
   const [token, setToken] = useState(() => localStorage.getItem('token')); // single time read from localStorage
+  // null = closed; otherwise { from } — the path to return to after login
+  const [loginModal, setLoginModal] = useState(null);
 
-  function saveAuth(data) {
+  const saveAuth = useCallback((data) => {
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
+  }, []);
+
+  const openLogin = useCallback((from) => {
+    setLoginModal({ from: from ?? null });
+  }, []);
+
+  const closeLogin = useCallback(() => setLoginModal(null), []);
+
+  async function startPasswordLogin(email, password) {
+    await post('/auth/password/start', { email, password });
   }
 
-  async function register(username, email, password) {
-    const { data } = await post('/auth/register', {
-      username,
-      email,
-      password,
-    });
+  async function sendEmailCode(email) {
+    await post('/auth/email/send-code', { email });
+  }
+
+  async function verifyEmailCode(email, code) {
+    const { data } = await post('/auth/email/verify-code', { email, code });
     saveAuth(data);
     return data;
   }
 
-  async function login(email, password) {
-    const { data } = await post('/auth/login', { email, password });
+  async function googleLogin(credential) {
+    const { data } = await post('/auth/google', { credential });
     saveAuth(data);
     return data;
   }
@@ -44,27 +53,43 @@ export function AuthProvider({ children }) {
     return data;
   }
 
-  function logout() {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
-  }
+  }, []);
 
   useEffect(() => {
     function handleUnauthorized() {
-      const isAdminRoute = location.pathname.startsWith('/admin');
       logout();
-      navigate(isAdminRoute ? '/admin/login' : '/login');
+      if (location.pathname.startsWith('/admin')) {
+        navigate('/admin/login');
+      } else {
+        openLogin(location.pathname);
+      }
     }
     window.addEventListener('auth:unauthorized', handleUnauthorized);
     return () =>
       window.removeEventListener('auth:unauthorized', handleUnauthorized);
-  }, [user, navigate, location.pathname]);
+  }, [logout, openLogin, navigate, location.pathname]);
 
   return (
     <AuthContext.Provider
-      value={{ user, token, register, login, adminLogin, logout }}
+      value={{
+        user,
+        token,
+        startPasswordLogin,
+        sendEmailCode,
+        verifyEmailCode,
+        googleLogin,
+        adminLogin,
+        logout,
+        saveAuth,
+        loginModal,
+        openLogin,
+        closeLogin,
+      }}
     >
       {children}
     </AuthContext.Provider>

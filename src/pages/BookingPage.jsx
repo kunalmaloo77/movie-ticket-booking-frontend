@@ -77,7 +77,7 @@ export default function BookingPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-6" />
+        <div className="h-8 w-48 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse mb-6" />
         <CinemaListSkeleton />
       </div>
     );
@@ -101,7 +101,7 @@ export default function BookingPage() {
     <div className="max-w-4xl mx-auto p-6">
       <button
         onClick={() => navigate(-1)}
-        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 mb-6 inline-flex items-center gap-1"
+        className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 mb-6 inline-flex items-center gap-1"
       >
         &larr; Back
       </button>
@@ -119,10 +119,10 @@ export default function BookingPage() {
               type="button"
               aria-pressed={isSelected}
               onClick={() => setSelectedDate(item)}
-              className={`flex flex-col items-center justify-center shrink-0 w-16 py-2 rounded-lg border cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${
+              className={`flex flex-col items-center justify-center shrink-0 w-16 py-2 rounded-lg border cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900 ${
                 isSelected
-                  ? 'bg-red-600 border-red-600 text-white'
-                  : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-red-400 hover:text-red-600 dark:hover:text-red-400'
+                  ? 'bg-brand-600 border-brand-600 text-white'
+                  : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-brand-400 hover:text-brand-600 dark:hover:text-brand-400'
               }`}
             >
               <span className="text-xs font-medium">
@@ -137,7 +137,7 @@ export default function BookingPage() {
       </div>
 
       {cinemas.length === 0 ? (
-        <p className="text-gray-400">
+        <p className="text-zinc-400">
           No shows available for this movie in {city_name} on{' '}
           {formatDateToDDMMYYYY(selectedDate)}.
         </p>
@@ -146,19 +146,19 @@ export default function BookingPage() {
           {cinemas.map((cinema) => (
             <div
               key={cinema.cinema_id}
-              className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 bg-white dark:bg-gray-900 shadow-sm"
+              className="border border-zinc-200 dark:border-zinc-700 rounded-lg p-5 bg-white dark:bg-zinc-900 shadow-sm"
             >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                   <h2 className="text-lg font-semibold">
                     {cinema.cinema_name}
                   </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                     {cinema.address}
                   </p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
                     {formatDateTime(cinema.start_time)}
                   </span>
                   <button
@@ -167,7 +167,7 @@ export default function BookingPage() {
                         `/movies/${movie_id}/${city_name}/seat-selection/${cinema.show_id}`
                       )
                     }
-                    className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
+                    className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
                   >
                     Book Seats
                   </button>

@@ -1,11 +1,13 @@
 import MySwal from './swal';
+import { BRAND_HEX, DANGER_HEX } from './theme';
 
 const isDark = () => document.documentElement.classList.contains('dark');
 
 const themed = (opts) => ({
-  background: isDark() ? '#111827' : '#ffffff',
-  color: isDark() ? '#f3f4f6' : '#111827',
-  confirmButton: isDark() ? 'swal-confirm-btn-dark' : 'swal-confirm-btn-light',
+  background: isDark() ? '#18181b' : '#ffffff',
+  color: isDark() ? '#f4f4f5' : '#18181b',
+  confirmButtonColor: BRAND_HEX,
+  cancelButtonColor: '#71717a',
   ...opts,
 });
 
@@ -34,7 +36,7 @@ export async function showConfirm(
       confirmButtonText: confirmText,
       cancelButtonText: 'Cancel',
       reverseButtons: true,
-      confirmButtonColor: danger ? '#dc2626' : undefined,
+      confirmButtonColor: danger ? DANGER_HEX : BRAND_HEX,
     })
   );
   return result.isConfirmed;

@@ -1,12 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
+import LoginModal from './components/LoginModal';
+import { useAuth } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
-import ExplorePage from './pages/ExplorePage';
-import Login from './pages/Login';
-import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
 import Analytics from './pages/admin/Analytics';
 import Regions from './pages/admin/Regions';
@@ -23,6 +27,14 @@ import AddEditSeatLayout from './pages/admin/AddEditSeatLayout';
 import MoviesPage from './pages/MoviesPage';
 import { RegionProvider } from './context/RegionContext';
 import NotFound from './pages/NotFound';
+import AdminLayout from './components/admin/AdminLayout';
+
+// Login popup, opened from anywhere via useAuth().openLogin(from)
+function LoginModalHost() {
+  const { loginModal, closeLogin } = useAuth();
+  if (!loginModal) return null;
+  return <LoginModal from={loginModal.from} onClose={closeLogin} />;
+}
 
 export default function App() {
   return (
@@ -31,6 +43,7 @@ export default function App() {
         <RegionProvider>
           <AuthProvider>
             <Navbar />
+            <LoginModalHost />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/explore/home/:city_name" element={<Home />} />
@@ -51,24 +64,26 @@ export default function App() {
                 element={<SeatSelectionPage />}
               />
               <Route path="/my-bookings" element={<MyBookings />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Navigate to="/" replace />} />
+              <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<ProtectedRoute admin />}>
-                <Route index element={<Navigate to="analytics" replace />} />
-                <Route path="analytics" element={<Analytics />} />
-                <Route path="regions" element={<Regions />} />
-                <Route path="cinemas" element={<Cinemas />} />
-                <Route path="movies" element={<Movies />} />
-                <Route path="shows" element={<Shows />} />
-                <Route path="shows/bulk" element={<BulkAddShows />} />
-                <Route path="screens" element={<Screens />} />
-                <Route
-                  path="cinemas/:cinema_id/screens"
-                  element={<AddEditSeatLayout />}
-                />
+                <Route element={<AdminLayout />}>
+                  <Route index element={<Navigate to="analytics" replace />} />
+                  <Route path="analytics" element={<Analytics />} />
+                  <Route path="regions" element={<Regions />} />
+                  <Route path="cinemas" element={<Cinemas />} />
+                  <Route path="movies" element={<Movies />} />
+                  <Route path="shows" element={<Shows />} />
+                  <Route path="shows/bulk" element={<BulkAddShows />} />
+                  <Route path="screens" element={<Screens />} />
+                  <Route
+                    path="cinemas/:cinema_id/screens"
+                    element={<AddEditSeatLayout />}
+                  />
+                </Route>
               </Route>
-                <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
         </RegionProvider>

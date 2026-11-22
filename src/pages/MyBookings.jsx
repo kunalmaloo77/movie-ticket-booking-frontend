@@ -12,7 +12,7 @@ const STATUS_STYLES = {
     'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
   PAYMENT_FAILED:
     'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
-  EXPIRED: 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400',
+  EXPIRED: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400',
 };
 
 const STATUS_LABELS = {
@@ -68,25 +68,25 @@ function downloadReceipt(booking) {
       align-items: flex-start;
       margin-bottom: 28px;
       padding-bottom: 16px;
-      border-bottom: 2px solid #dc2626;
+      border-bottom: 2px solid #e11d48;
     }
-    .app-name { font-size: 22px; font-weight: 800; color: #dc2626; letter-spacing: -0.5px; }
+    .app-name { font-size: 22px; font-weight: 800; color: #e11d48; letter-spacing: -0.5px; }
     .receipt-label {
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.12em;
-      color: #6b7280;
+      color: #71717a;
       text-transform: uppercase;
       margin-top: 4px;
     }
     .booking-id { font-size: 26px; font-weight: 700; margin-bottom: 24px; }
-    hr { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
+    hr { border: none; border-top: 1px solid #e4e4e7; margin: 20px 0; }
     .label {
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #9ca3af;
+      color: #a1a1aa;
       margin-bottom: 3px;
     }
     .value { font-size: 15px; font-weight: 500; margin-bottom: 16px; color: #111; }
@@ -94,11 +94,11 @@ function downloadReceipt(booking) {
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
     .footer {
       font-size: 11px;
-      color: #9ca3af;
+      color: #a1a1aa;
       text-align: center;
       margin-top: 24px;
       padding-top: 16px;
-      border-top: 1px solid #f3f4f6;
+      border-top: 1px solid #f4f4f5;
     }
     @media print {
       body { padding: 20px; }
@@ -164,7 +164,7 @@ function downloadReceipt(booking) {
 }
 
 export default function MyBookings() {
-  const { user } = useAuth();
+  const { user, openLogin } = useAuth();
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -172,9 +172,10 @@ export default function MyBookings() {
 
   useEffect(() => {
     if (!user) {
-      navigate('/login', { state: { from: '/my-bookings' } });
+      openLogin('/my-bookings');
       return;
     }
+    setLoading(true);
     const fetchBookings = async () => {
       try {
         const { data } = await get(`/booking/user/${user.id}`);
@@ -186,7 +187,23 @@ export default function MyBookings() {
       }
     };
     fetchBookings();
-  }, [user, navigate]);
+  }, [user, openLogin]);
+
+  if (!user) {
+    return (
+      <div className="text-center py-24 px-4">
+        <p className="text-lg mb-4 text-zinc-500">
+          Log in to see your bookings.
+        </p>
+        <button
+          onClick={() => openLogin('/my-bookings')}
+          className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors"
+        >
+          Log in
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return <BookingListSkeleton />;
@@ -201,11 +218,11 @@ export default function MyBookings() {
       <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
 
       {bookings.length === 0 ? (
-        <div className="text-center py-24 text-gray-400">
+        <div className="text-center py-24 text-zinc-400">
           <p className="text-lg mb-4">No bookings yet.</p>
           <button
             onClick={() => navigate('/')}
-            className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
+            className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors"
           >
             Browse Movies
           </button>
@@ -232,44 +249,44 @@ export default function MyBookings() {
             return (
               <div
                 key={booking.booking_id}
-                className="border border-gray-200 dark:border-gray-700 rounded-xl p-5 bg-white dark:bg-gray-900 shadow-sm"
+                className="border border-zinc-200 dark:border-zinc-700 rounded-xl p-5 bg-white dark:bg-zinc-900 shadow-sm"
               >
                 {/* Section A — Header */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-base font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                       {booking.movie_title}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
                       {booking.cinema_name} &middot; {booking.screen_name}{' '}
                       &middot; {booking.screen_type}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
                       {showTime} &middot; {booking.language}
                     </p>
                   </div>
                   <span
                     className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${
                       STATUS_STYLES[booking.status] ||
-                      'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                      'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
                     }`}
                   >
                     {STATUS_LABELS[booking.status] || booking.status}
                   </span>
                 </div>
 
-                <hr className="my-3 border-gray-100 dark:border-gray-800" />
+                <hr className="my-3 border-zinc-100 dark:border-zinc-800" />
 
                 {/* Section B — Detail grid */}
-                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-700 dark:text-gray-300">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-zinc-700 dark:text-zinc-300">
                   <div>
-                    <span className="text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wide block mb-0.5">
+                    <span className="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wide block mb-0.5">
                       Seats
                     </span>
                     <span className="font-medium">{seatDisplay}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wide block mb-0.5">
+                    <span className="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wide block mb-0.5">
                       Amount
                     </span>
                     <span className="font-medium">
@@ -277,13 +294,13 @@ export default function MyBookings() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wide block mb-0.5">
+                    <span className="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wide block mb-0.5">
                       Booking
                     </span>
                     <span className="font-medium">#{booking.booking_id}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wide block mb-0.5">
+                    <span className="text-zinc-400 dark:text-zinc-500 text-xs uppercase tracking-wide block mb-0.5">
                       Booked On
                     </span>
                     <span className="font-medium">{bookedOn}</span>
@@ -293,7 +310,7 @@ export default function MyBookings() {
                 {/* Section C — Receipt (confirmed only) */}
                 {booking.status === 'PAYMENT_SUCCESS' && (
                   <>
-                    <hr className="my-3 border-gray-100 dark:border-gray-800" />
+                    <hr className="my-3 border-zinc-100 dark:border-zinc-800" />
                     <div className="flex justify-end">
                       <button
                         onClick={() => downloadReceipt(booking)}

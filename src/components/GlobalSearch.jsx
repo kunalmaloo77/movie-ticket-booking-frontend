@@ -63,35 +63,36 @@ export default function GlobalSearch() {
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative w-full max-w-xl">
       <div className="relative">
         <Search
-          size={14}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          size={16}
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none"
         />
         <input
-          type="text"
+          type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => hasResults && setOpen(true)}
           placeholder="Search movies, cinemas..."
-          className="bg-gray-800 text-white text-sm rounded pl-8 pr-3 py-1.5 w-40 sm:w-56 md:w-72 lg:w-80 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          aria-label="Search movies and cinemas"
+          className="w-full rounded-full border border-white/20 bg-white/10 py-2 pl-10 pr-4 text-sm text-white placeholder-zinc-300 transition-colors hover:bg-white/15 focus:border-white/40 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/20"
         />
       </div>
 
       {open && (
-        <div className="absolute top-full mt-1 w-40 sm:w-56 md:w-72 lg:w-80 bg-white rounded shadow-lg border z-50 max-h-96 overflow-y-auto text-gray-900">
+        <div className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-lg border z-50 max-h-96 overflow-y-auto text-zinc-900">
           {loading && (
-            <p className="text-xs text-gray-400 px-3 py-2">Searching...</p>
+            <p className="text-xs text-zinc-400 px-3 py-2">Searching...</p>
           )}
 
           {!loading && !hasResults && (
-            <p className="text-xs text-gray-400 px-3 py-2">No results found.</p>
+            <p className="text-xs text-zinc-400 px-3 py-2">No results found.</p>
           )}
 
           {!loading && movies.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-3 py-1.5 bg-gray-50 border-b">
+              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wide px-3 py-1.5 bg-zinc-50 border-b">
                 Movies
               </p>
               {movies.map((movie) =>
@@ -100,13 +101,13 @@ export default function GlobalSearch() {
                     key={movie.id}
                     to={`/movies/${cityName}/${toSlug(movie.title)}/${movie.id}`}
                     onClick={handleSelect}
-                    className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 border-b last:border-0"
+                    className="flex items-center gap-3 px-3 py-2 hover:bg-zinc-50 border-b last:border-0"
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">
                         {movie.title}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-zinc-400">
                         Rating: {movie.rating}
                       </p>
                     </div>
@@ -120,10 +121,10 @@ export default function GlobalSearch() {
                       <p className="text-sm font-medium truncate">
                         {movie.title}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-zinc-400">
                         Rating: {movie.rating}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-zinc-400">
                         Select a city to book
                       </p>
                     </div>
@@ -135,16 +136,16 @@ export default function GlobalSearch() {
 
           {!loading && cinemas.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-3 py-1.5 bg-gray-50 border-b border-t">
+              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wide px-3 py-1.5 bg-zinc-50 border-b border-t">
                 Cinemas
               </p>
               {cinemas.map((cinema) => (
                 <div
                   key={cinema.id}
-                  className="px-3 py-2 hover:bg-gray-50 border-b last:border-0"
+                  className="px-3 py-2 hover:bg-zinc-50 border-b last:border-0"
                 >
                   <p className="text-sm font-medium">{cinema.cinema_name}</p>
-                  <p className="text-xs text-gray-400 truncate">
+                  <p className="text-xs text-zinc-400 truncate">
                     {cinema.address} &middot; {cinema.city_name}
                   </p>
                 </div>

@@ -13,15 +13,15 @@ const EMPTY_FORM = {
 };
 
 const inputClass =
-  'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500';
+  'w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500';
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3">
-      <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+    <div className="rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-3">
+      <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
-      <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+      <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
         {value}
       </p>
     </div>
@@ -30,10 +30,10 @@ function StatCard({ label, value }) {
 
 function RegionSkeleton() {
   return (
-    <div className="animate-pulse rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-      <div className="h-5 w-32 rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="mt-3 h-4 w-20 rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="mt-4 h-4 w-40 rounded bg-gray-200 dark:bg-gray-700" />
+    <div className="animate-pulse rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4">
+      <div className="h-5 w-32 rounded bg-zinc-200 dark:bg-zinc-700" />
+      <div className="mt-3 h-4 w-20 rounded bg-zinc-200 dark:bg-zinc-700" />
+      <div className="mt-4 h-4 w-40 rounded bg-zinc-200 dark:bg-zinc-700" />
     </div>
   );
 }
@@ -215,16 +215,16 @@ export default function Regions() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-6 sm:px-8">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-6 sm:px-8">
         <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr] lg:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-600 dark:text-red-400">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
               Admin · Regions
             </p>
-            <h1 className="mt-2 max-w-2xl text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">
+            <h1 className="mt-2 max-w-2xl text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
               Manage regions
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
               Create region codes, rename markets, and keep cinema mapping tidy
               without leaving the page.
             </p>
@@ -239,13 +239,13 @@ export default function Regions() {
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 xl:sticky xl:top-6 xl:self-start">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 xl:sticky xl:top-20 xl:self-start">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 Region registry
               </p>
-              <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
                 {isEditing ? 'Edit region' : 'Add a new region'}
               </h2>
             </div>
@@ -256,14 +256,14 @@ export default function Regions() {
             )}
           </div>
 
-          <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+          <p className="mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
             Use a short, memorable city code. These regions power cinema linking
             and the public city picker.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 City code
               </span>
               <input
@@ -279,7 +279,7 @@ export default function Regions() {
             </label>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 City name
               </span>
               <input
@@ -323,16 +323,16 @@ export default function Regions() {
           </form>
         </section>
 
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6">
-          <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6">
+          <div className="flex flex-col gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 Region library
               </p>
-              <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
                 Search, update, or retire regions
               </h2>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                 Filter by city name or code and manage records without jumping
                 between screens.
               </p>
@@ -361,13 +361,13 @@ export default function Regions() {
                 <button
                   type="button"
                   onClick={() => setSearchInput('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400 transition hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200"
                 >
                   Clear
                 </button>
               )}
             </div>
-            <div className="rounded border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+            <div className="rounded border border-zinc-200 dark:border-zinc-700 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300">
               {search
                 ? `Showing results for "${search}"`
                 : 'Showing all regions'}
@@ -382,13 +382,13 @@ export default function Regions() {
                 <RegionSkeleton />
               </div>
             ) : regions.length === 0 ? (
-              <div className="rounded border border-dashed border-gray-300 dark:border-gray-700 px-6 py-12 text-center">
-                <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <div className="rounded border border-dashed border-zinc-300 dark:border-zinc-700 px-6 py-12 text-center">
+                <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                   {search
                     ? 'No regions matched your search.'
                     : 'No regions yet.'}
                 </p>
-                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
+                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-600 dark:text-zinc-400">
                   {search
                     ? 'Try a different city name or code, or clear the search to browse the full region list.'
                     : 'Create your first region to start connecting cinemas and city-based booking flows.'}
@@ -413,16 +413,16 @@ export default function Regions() {
                     className={`rounded border p-4 transition sm:p-5 ${
                       active
                         ? 'border-red-300 dark:border-red-800 bg-red-50/60 dark:bg-red-950/20'
-                        : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40 hover:border-gray-300 dark:hover:border-gray-700'
+                        : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 hover:border-zinc-300 dark:hover:border-zinc-700'
                     }`}
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                             {region.city_name}
                           </h3>
-                          <span className="rounded bg-gray-900 dark:bg-gray-100 px-2.5 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-gray-900">
+                          <span className="rounded bg-zinc-900 dark:bg-zinc-100 px-2.5 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-zinc-900">
                             {region.city_code}
                           </span>
                           {active && (
@@ -431,7 +431,7 @@ export default function Regions() {
                             </span>
                           )}
                         </div>
-                        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
                           <span>
                             Created {formatCreatedAt(region.created_at)}
                           </span>
@@ -466,8 +466,8 @@ export default function Regions() {
           </div>
 
           {pagination.totalPages > 1 && !loading && (
-            <div className="mt-6 flex flex-col gap-3 border-t border-gray-100 dark:border-gray-800 pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className="mt-6 flex flex-col gap-3 border-t border-zinc-100 dark:border-zinc-800 pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-zinc-600 dark:text-zinc-400">
                 Page {pagination.page} of {pagination.totalPages}
               </p>
               <div className="flex gap-2">

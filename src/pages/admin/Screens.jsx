@@ -83,7 +83,7 @@ const Screens = () => {
           <button
             disabled={!selectedCinema}
             onClick={handleScreenSubmit}
-            className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 font-medium transition-colors"
+            className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 py-2 rounded hover:bg-zinc-800 dark:hover:bg-zinc-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 font-medium transition-colors"
           >
             Add/Edit Screens
           </button>

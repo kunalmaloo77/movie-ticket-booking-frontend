@@ -4,7 +4,7 @@ import { get } from '../api';
 import { capitalize } from '../utils/utils';
 
 const inputClass =
-  'w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 pl-11 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500';
+  'w-full border border-zinc-300 dark:border-zinc-600 rounded-lg px-4 py-3 pl-11 bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500';
 
 export default function CitySelectorModal({ open, onClose, onSelect }) {
   const [regions, setRegions] = useState([]);
@@ -84,20 +84,20 @@ export default function CitySelectorModal({ open, onClose, onSelect }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/55 p-4 pt-10 sm:p-6">
-      <div className="w-full max-w-4xl rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl">
-        <div className="flex items-start justify-between gap-4 border-b border-gray-200 dark:border-gray-800 px-5 py-4 sm:px-6">
+      <div className="w-full max-w-4xl rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 px-5 py-4 sm:px-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
               Select your city
             </h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
               Choose a city to see movies playing near you.
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
+            className="rounded-full p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white transition-colors"
             aria-label="Close city picker"
           >
             <X size={18} />
@@ -109,7 +109,7 @@ export default function CitySelectorModal({ open, onClose, onSelect }) {
             <div className="relative">
               <Search
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
               />
               <input
                 type="text"
@@ -122,14 +122,14 @@ export default function CitySelectorModal({ open, onClose, onSelect }) {
                 <button
                   type="button"
                   onClick={() => setSearchInput('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400 transition hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200"
                 >
                   Clear
                 </button>
               )}
             </div>
 
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+            <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
               {search
                 ? `${pagination.totalItems} match${pagination.totalItems === 1 ? '' : 'es'}`
                 : `${regions.length} of ${pagination.totalItems} cities shown`}
@@ -141,18 +141,18 @@ export default function CitySelectorModal({ open, onClose, onSelect }) {
               {Array.from({ length: 8 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="h-20 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 animate-pulse"
+                  className="h-20 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 animate-pulse"
                 />
               ))}
             </div>
           ) : regions.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-gray-300 dark:border-gray-700 px-6 py-12 text-center mt-6">
-              <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <div className="rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 px-6 py-12 text-center mt-6">
+              <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                 {search
                   ? 'No cities matched your search.'
                   : 'No cities available.'}
               </p>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
                 {search
                   ? 'Try a different city name or code.'
                   : 'Region data will appear here once cities are available.'}
@@ -165,20 +165,20 @@ export default function CitySelectorModal({ open, onClose, onSelect }) {
                   <button
                     key={region.id}
                     onClick={() => onSelect(region)}
-                    className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-500 transition-colors group bg-white dark:bg-gray-900"
+                    className="border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors group bg-white dark:bg-zinc-900"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <span className="font-medium">
                           {capitalize(region.city_name)}
                         </span>
-                        <span className="block text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        <span className="block text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
                           {region.city_code}
                         </span>
                       </div>
                       <ArrowRight
                         size={14}
-                        className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity"
                       />
                     </div>
                   </button>
@@ -191,7 +191,7 @@ export default function CitySelectorModal({ open, onClose, onSelect }) {
                     type="button"
                     onClick={loadMoreRegions}
                     disabled={loadingMore}
-                    className="rounded-lg border border-gray-300 dark:border-gray-600 px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="rounded-lg border border-zinc-300 dark:border-zinc-600 px-5 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {loadingMore ? 'Loading more…' : 'Load more cities'}
                   </button>

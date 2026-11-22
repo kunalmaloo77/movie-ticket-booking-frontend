@@ -23,7 +23,7 @@ const EMPTY_FORM = {
 };
 
 const inputClass =
-  'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm';
+  'w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 text-sm';
 
 function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
   const selectStyles = getSelectStyles(isDark);
@@ -103,14 +103,14 @@ function MovieFormDrawer({ mode, movie, genres, onClose, onSaved, isDark }) {
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative z-50 w-full max-w-lg bg-white dark:bg-gray-900 shadow-xl flex flex-col h-full overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900">
+      <div className="relative z-50 w-full max-w-lg bg-white dark:bg-zinc-900 shadow-xl flex flex-col h-full overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b dark:border-zinc-700 sticky top-0 bg-white dark:bg-zinc-900">
           <h2 className="text-lg font-bold">
             {mode === 'edit' ? 'Edit Movie' : 'Add Movie'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 text-2xl leading-none cursor-pointer"
+            className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-100 text-2xl leading-none cursor-pointer"
           >
             &times;
           </button>
@@ -401,7 +401,7 @@ export default function Movies() {
               setEditingMovie(null);
               setDrawerOpen(true);
             }}
-            className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer transition-colors"
+            className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm px-4 py-2 rounded hover:bg-zinc-800 dark:hover:bg-zinc-200 cursor-pointer transition-colors"
           >
             + Add Movie
           </button>
@@ -412,7 +412,7 @@ export default function Movies() {
           placeholder="Search by title or TMDB ID…"
           value={searchInput}
           onChange={handleSearchChange}
-          className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 mb-3"
+          className="w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 text-sm bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 mb-3"
         />
 
         {deleteTarget && (
@@ -435,7 +435,7 @@ export default function Movies() {
             <div className="flex gap-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                className="px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
               >
                 Cancel
               </button>
@@ -454,9 +454,9 @@ export default function Movies() {
           </div>
         )}
 
-        <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded">
+        <div className="overflow-x-auto border border-zinc-200 dark:border-zinc-700 rounded">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800 text-left">
+            <thead className="bg-zinc-50 dark:bg-zinc-800 text-left">
               <tr>
                 <th className="px-3 py-2 font-medium">Poster</th>
                 <th className="px-3 py-2 font-medium">Title</th>
@@ -471,7 +471,7 @@ export default function Movies() {
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-3 py-6 text-center text-gray-400"
+                    className="px-3 py-6 text-center text-zinc-400"
                   >
                     No movies found.
                   </td>
@@ -480,7 +480,7 @@ export default function Movies() {
                 movies.map((m) => (
                   <tr
                     key={m.id}
-                    className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                    className="border-t dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                   >
                     <td className="px-3 py-2">
                       <img
@@ -492,13 +492,13 @@ export default function Movies() {
                     <td className="px-3 py-2 font-medium max-w-[200px] truncate">
                       {m.title}
                     </td>
-                    <td className="px-3 py-2 text-gray-600 dark:text-gray-400">
+                    <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
                       {m.language}
                     </td>
-                    <td className="px-3 py-2 text-gray-600 dark:text-gray-400">
+                    <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
                       {m.rating}
                     </td>
-                    <td className="px-3 py-2 text-gray-600 dark:text-gray-400">
+                    <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
                       {m.release_date
                         ? new Date(m.release_date).toLocaleDateString()
                         : '—'}
@@ -531,17 +531,17 @@ export default function Movies() {
             <button
               onClick={() => fetchMovies(pagination.page - 1)}
               disabled={pagination.page <= 1}
-              className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+              className="px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded disabled:opacity-40 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
             >
               Previous
             </button>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-zinc-600 dark:text-zinc-400">
               Page {pagination.page} of {pagination.totalPages}
             </span>
             <button
               onClick={() => fetchMovies(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages}
-              className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+              className="px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded disabled:opacity-40 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
             >
               Next
             </button>
@@ -549,7 +549,7 @@ export default function Movies() {
         )}
       </div>
 
-      <hr className="dark:border-gray-700" />
+      <hr className="dark:border-zinc-700" />
 
       <div className="max-w-md">
         <h1 className="text-xl font-bold mb-4">Create Genre</h1>
@@ -559,7 +559,7 @@ export default function Movies() {
             placeholder="Genre Name"
             value={genreName}
             onChange={(e) => setGenreName(e.target.value)}
-            className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+            className="w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
             required
           />
           <Button

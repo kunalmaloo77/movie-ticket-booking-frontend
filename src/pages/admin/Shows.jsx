@@ -34,15 +34,15 @@ function loadStoredFilterRegion() {
 }
 
 const inputClass =
-  'w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500';
+  'w-full border border-zinc-300 dark:border-zinc-600 rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-600 placeholder:text-zinc-400 dark:placeholder:text-zinc-500';
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3">
-      <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+    <div className="rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-3">
+      <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
-      <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+      <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
         {value}
       </p>
     </div>
@@ -497,16 +497,16 @@ export default function Shows() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
-      <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-6 sm:px-8">
+      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-6 sm:px-8">
         <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr] lg:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-red-600 dark:text-red-400">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
               Admin · Shows
             </p>
-            <h1 className="mt-2 max-w-2xl text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">
+            <h1 className="mt-2 max-w-2xl text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
               Manage shows
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
               Create schedules, revise timings, and manage seat pricing from one
               place without bouncing across separate admin flows.
             </p>
@@ -520,13 +520,13 @@ export default function Shows() {
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[380px_1fr]">
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 xl:sticky xl:top-6 xl:self-start">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 xl:sticky xl:top-20 xl:self-start">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 Show scheduler
               </p>
-              <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
                 {isEditing ? 'Edit show' : 'Create a show'}
               </h2>
             </div>
@@ -537,14 +537,14 @@ export default function Shows() {
             )}
           </div>
 
-          <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+          <p className="mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
             Start with the movie, then narrow down region, cinema, and screen
             before setting language and seat pricing.
           </p>
 
           <Link
             to="/admin/shows/bulk"
-            className="mt-3 inline-block text-sm font-medium text-red-600 hover:underline dark:text-red-400"
+            className="mt-3 inline-block text-sm font-medium text-brand-600 hover:underline dark:text-brand-400"
           >
             Bulk add shows for a date range →
           </Link>
@@ -569,7 +569,7 @@ export default function Shows() {
             />
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Start time
               </span>
               <input
@@ -587,7 +587,7 @@ export default function Shows() {
             </label>
 
             <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Language
               </span>
               <Select
@@ -610,26 +610,26 @@ export default function Shows() {
             </div>
 
             {categories.length > 0 && (
-              <div className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4">
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+              <div className="rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 p-4">
+                <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
                   Seat category pricing
                 </p>
                 <div className="mt-3 space-y-3">
                   {categories.map((category) => (
                     <div key={category.id} className="flex items-center gap-3">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                        <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
                           {category.name}
                         </p>
                         {category.description && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400">
                             {category.description}
                           </p>
                         )}
                       </div>
 
                       <div className="relative w-32 shrink-0">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-gray-500">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 dark:text-zinc-500">
                           ₹
                         </span>
                         <input
@@ -649,7 +649,7 @@ export default function Shows() {
                               event.target.value
                             )
                           }
-                          className="w-full rounded border border-gray-300 bg-white py-2 pl-7 pr-3 text-sm outline-none focus:ring-2 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-gray-600"
+                          className="w-full rounded border border-zinc-300 bg-white py-2 pl-7 pr-3 text-sm outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:ring-zinc-600"
                           required
                         />
                       </div>
@@ -691,17 +691,17 @@ export default function Shows() {
           </form>
         </section>
 
-        <section className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6">
-          <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800 pb-5">
+        <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6">
+          <div className="flex flex-col gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                   Show calendar
                 </p>
-                <h2 className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
                   Browse, edit, or retire shows by date
                 </h2>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                   Click a date to see every show scheduled that day and manage
                   it from there.
                 </p>
@@ -735,7 +735,7 @@ export default function Shows() {
                   <button
                     type="button"
                     onClick={() => setSearchInput('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400 transition hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200"
                   >
                     Clear
                   </button>
@@ -772,7 +772,7 @@ export default function Shows() {
               <button
                 type="button"
                 onClick={() => goToMonth(-1)}
-                className="rounded border border-gray-300 dark:border-gray-600 p-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                className="rounded border border-zinc-300 dark:border-zinc-600 p-1.5 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
                 aria-label="Previous month"
               >
                 <ChevronLeft size={18} />
@@ -780,12 +780,12 @@ export default function Shows() {
               <button
                 type="button"
                 onClick={() => goToMonth(1)}
-                className="rounded border border-gray-300 dark:border-gray-600 p-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                className="rounded border border-zinc-300 dark:border-zinc-600 p-1.5 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
                 aria-label="Next month"
               >
                 <ChevronRight size={18} />
               </button>
-              <h3 className="ml-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="ml-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                 {monthLabel}
               </h3>
             </div>
@@ -794,15 +794,15 @@ export default function Shows() {
             </Button>
           </div>
 
-          <div className="mt-4 grid grid-cols-7 gap-px overflow-hidden rounded border border-gray-200 dark:border-gray-800 bg-gray-200 dark:bg-gray-800 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          <div className="mt-4 grid grid-cols-7 gap-px overflow-hidden rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800 text-center text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
             {WEEKDAY_LABELS.map((day) => (
-              <div key={day} className="bg-gray-50 dark:bg-gray-900/60 py-2">
+              <div key={day} className="bg-zinc-50 dark:bg-zinc-900/60 py-2">
                 {day}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-b border-x border-b border-gray-200 dark:border-gray-800 bg-gray-200 dark:bg-gray-800">
+          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-b border-x border-b border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800">
             {calendarCells.map((cell) => {
               const dayShows = showsByDate.get(cell.key) ?? [];
               const visibleDayShows = dayShows.slice(0, 3);
@@ -815,24 +815,24 @@ export default function Shows() {
                   onClick={() => setSelectedDateKey(cell.key)}
                   className={`flex min-h-[92px] flex-col items-stretch gap-1 p-1.5 text-left transition sm:min-h-[108px] ${
                     cell.inCurrentMonth
-                      ? 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/60'
-                      : 'bg-gray-50 dark:bg-gray-900/40 text-gray-400 dark:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800/40'
+                      ? 'bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/60'
+                      : 'bg-zinc-50 dark:bg-zinc-900/40 text-zinc-400 dark:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800/40'
                   }`}
                 >
                   <span
                     className={`self-start rounded-full px-1.5 text-xs font-medium ${
                       cell.isToday
-                        ? 'bg-red-600 text-white'
+                        ? 'bg-brand-600 text-white'
                         : cell.inCurrentMonth
-                          ? 'text-gray-700 dark:text-gray-300'
-                          : 'text-gray-400 dark:text-gray-600'
+                          ? 'text-zinc-700 dark:text-zinc-300'
+                          : 'text-zinc-400 dark:text-zinc-600'
                     }`}
                   >
                     {cell.date.getDate()}
                   </span>
 
                   {loading ? (
-                    <span className="mt-1 h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+                    <span className="mt-1 h-4 w-3/4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
                   ) : (
                     <div className="flex flex-1 flex-col gap-1">
                       {visibleDayShows.map((show) => (
@@ -840,15 +840,15 @@ export default function Shows() {
                           key={show.id}
                           className={`truncate rounded px-1.5 py-0.5 text-[11px] font-medium ${
                             editingShow?.id === show.id
-                              ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
-                              : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                              ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300'
+                              : 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
                           }`}
                         >
                           {formatShowTime(show.start_time)} · {show.movie_title}
                         </span>
                       ))}
                       {extraCount > 0 && (
-                        <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                        <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
                           +{extraCount} more
                         </span>
                       )}
@@ -863,13 +863,13 @@ export default function Shows() {
 
       {selectedDateKey && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/55 p-4 pt-10 sm:p-6">
-          <div className="w-full max-w-lg rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-gray-200 dark:border-gray-800 px-5 py-4 sm:px-6">
+          <div className="w-full max-w-lg rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xl">
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 px-5 py-4 sm:px-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                   Shows on
                 </p>
-                <h2 className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                   {selectedDate &&
                     new Intl.DateTimeFormat('en-IN', {
                       weekday: 'long',
@@ -885,7 +885,7 @@ export default function Shows() {
                   setSelectedDateKey(null);
                   setDeleteTarget(null);
                 }}
-                className="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
+                className="rounded-full p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white transition-colors"
                 aria-label="Close"
               >
                 <X size={18} />
@@ -894,11 +894,11 @@ export default function Shows() {
 
             <div className="max-h-[70vh] overflow-y-auto p-5 sm:p-6">
               {selectedDayShows.length === 0 ? (
-                <div className="rounded border border-dashed border-gray-300 dark:border-gray-700 px-6 py-10 text-center">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <div className="rounded border border-dashed border-zinc-300 dark:border-zinc-700 px-6 py-10 text-center">
+                  <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     No shows scheduled on this date.
                   </p>
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                     Use the scheduler on the left to create one — the start
                     time will default to this day.
                   </p>
@@ -915,17 +915,17 @@ export default function Shows() {
                         className={`rounded border p-4 transition ${
                           active
                             ? 'border-red-300 dark:border-red-800 bg-red-50/60 dark:bg-red-950/20'
-                            : 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40'
+                            : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40'
                         }`}
                       >
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                          <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                             {show.movie_title}
                           </h3>
-                          <span className="rounded bg-gray-900 dark:bg-gray-100 px-2 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-gray-900">
+                          <span className="rounded bg-zinc-900 dark:bg-zinc-100 px-2 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-zinc-900">
                             {show.language_name}
                           </span>
-                          <span className="rounded bg-gray-900 dark:bg-gray-100 px-2 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-gray-900">
+                          <span className="rounded bg-zinc-900 dark:bg-zinc-100 px-2 py-0.5 text-xs font-semibold tracking-wide text-white dark:text-zinc-900">
                             {convertMinutes(show.movie_runtime).formatted}
                           </span>
                           {active && (
@@ -935,7 +935,7 @@ export default function Shows() {
                           )}
                         </div>
 
-                        <div className="mt-2 space-y-1.5 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="mt-2 space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
                           <p>
                             {show.region_name} · {show.cinema_name} ·{' '}
                             {show.screen_name}
